@@ -1,5 +1,6 @@
 import { LogOut } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
+import logo from '../../public/Logo 3.svg';
 
 export default function Sidebar() {
   const navItems = [
@@ -15,10 +16,11 @@ export default function Sidebar() {
 
   return (
     <div className="h-screen w-64 bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0 text-slate-800">
-      <div className="p-6 border-b border-slate-200">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Claimly
-        </h1>
+      <div className="p-6 flex justify-center items-center" >
+        <Link to="/">
+          <img src={logo} alt="" className='w-36' />
+        </Link>
+
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
