@@ -9,7 +9,7 @@ export default function Layout() {
             <div className="ml-64 min-h-screen transition-all duration-300 flex flex-col">
                 <Navbar />
                 <main className="flex-1 p-8">
-                    <div className="max-w-7xl mx-auto">
+                    <div className="max-w-8xl mx-auto">
                         <Outlet />
                     </div>
                 </main>
