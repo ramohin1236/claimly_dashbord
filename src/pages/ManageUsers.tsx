@@ -1,9 +1,10 @@
 import dashboardIcon from "../../public/Group (4).svg";
 import userIcon from "../../public/Ellipse 2033.svg";
 import frame3 from "../../public/Frame (3).svg";
-import frame4 from "../../public/Frame (4).svg";
-import frame5 from "../../public/Frame (5).svg";
+import blkIcon from "../../public/Group (5).svg";
+import unblkIcon from "../../public/unblk.svg";
 
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Table, Button, Input, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -30,92 +31,92 @@ const dataSource: UserData[] = [
     })),
 ];
 
-const columns: ColumnsType<UserData> = [
-    {
-        title: "User Name",
-        dataIndex: "username",
-        key: "username",
-        render: (username: string) => (
-            <div className="flex items-center gap-2">
-                <img
-                    src={userIcon}
-                    alt="user"
-                    className="w-8 h-8 rounded-full"
-                />
-                <span className="text-[#333333] text-[16px]">{username}</span>
-            </div>
-        ),
-    },
-    {
-        title: "Email",
-        dataIndex: "email",
-        key: "email",
-        render: (text: string) => <span className="text-[14px] text-[#333333]">{text}</span>
-    },
-    {
-        title: "Phone",
-        dataIndex: "phone",
-        key: "phone",
-        render: (text: string) => <span className="text-[14px] text-[#333333]">{text}</span>
-    },
-    {
-        title: "Joined On",
-        dataIndex: "joinedOn",
-        key: "joinedOn",
-        render: (text: string) => <span className="text-[14px] text-[#333333]">{text}</span>
-    },
-    {
-        title: "Status",
-        dataIndex: "status",
-        key: "status",
-        render: (status: UserData["status"]) => (
-            <span
-                className={`text-[14px] ${status === "Active" ? "text-green-500" : "text-red-500"
-                    }`}
-            >
-                {status === "Active" ? "Active" : "Blocked"}
-            </span>
-        ),
-    },
-    {
-        title: "Actions",
-        key: "actions",
-        render: (_, record: UserData) => (
-            <div className="flex items-center gap-2">
-                <Button
-                    onClick={() => console.log("Account Info:", record)}
-                    className="p-0 border-[#5D5D5D] rounded-[4px] w-8 h-8 flex justify-center items-center"
-                    style={{ padding: 0 }}
-                >
-                    <img src={frame3} alt="user" className="w-[18px] h-[18px]" />
-                </Button>
-
-                {record.status === "Active" ? (
-                    <Button
-                        onClick={() => alert(`Blocking user: ${record.username}`)}
-                        className="p-0 border-[#5D5D5D] rounded-[4px] w-8 h-8 flex justify-center items-center"
-                        style={{ padding: 0 }}
-                    >
-                        <img src={frame4} alt="block" className="w-[18px] h-[18px]" />
-                    </Button>
-                ) : (
-                    <Button
-                        onClick={() => alert(`Activating user: ${record.username}`)}
-                        className="p-0 border !border-[#FF4151] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#FF4151]/5"
-                        style={{ padding: 0, borderColor: '#FF4151' }}
-                    >
-                        <img src={frame5} alt="activate" className="w-[18px] h-[18px]" />
-                    </Button>
-                )}
-            </div>
-        ),
-    },
-];
-
 export default function ManageUsers() {
+    const navigate = useNavigate();
     const [searchText, setSearchText] = useState("");
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
+    const columns: ColumnsType<UserData> = [
+        {
+            title: "User Name",
+            dataIndex: "username",
+            key: "username",
+            render: (username: string) => (
+                <div className="flex items-center gap-2">
+                    <img
+                        src={userIcon}
+                        alt="user"
+                        className="w-8 h-8 rounded-full"
+                    />
+                    <span className="text-[#333333] text-[16px]">{username}</span>
+                </div>
+            ),
+        },
+        {
+            title: "Email",
+            dataIndex: "email",
+            key: "email",
+            render: (text: string) => <span className="text-[14px] text-[#333333]">{text}</span>
+        },
+        {
+            title: "Phone",
+            dataIndex: "phone",
+            key: "phone",
+            render: (text: string) => <span className="text-[14px] text-[#333333]">{text}</span>
+        },
+        {
+            title: "Joined On",
+            dataIndex: "joinedOn",
+            key: "joinedOn",
+            render: (text: string) => <span className="text-[14px] text-[#333333]">{text}</span>
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+            render: (status: UserData["status"]) => (
+                <span
+                    className={`text-[14px] ${status === "Active" ? "text-[#22C55E]" : "text-[#EF4444]"
+                        }`}
+                >
+                    {status === "Active" ? "Active" : "Blocked"}
+                </span>
+            ),
+        },
+        {
+            title: "Actions",
+            key: "actions",
+            render: (_, record: UserData) => (
+                <div className="flex items-center gap-2">
+                    <Button
+                        onClick={() => navigate(`/manage_users/${record.key}`)}
+                        className="p-0 border-[#5D5D5D] rounded-[4px] w-8 h-8 flex justify-center items-center"
+                        style={{ padding: 0 }}
+                    >
+                        <img src={frame3} alt="user" className="w-[18px] h-[18px]" />
+                    </Button>
+
+                    {record.status === "Active" ? (
+                        <Button
+                            onClick={() => alert(`Blocking user: ${record.username}`)}
+                            className="p-0 border-[#EF4444] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#EF4444]/5"
+                            style={{ padding: 0, borderColor: '#EF4444' }}
+                        >
+                            <img src={blkIcon} alt="block" className="w-[18px] h-[18px]" />
+                        </Button>
+                    ) : (
+                        <Button
+                            onClick={() => alert(`Activating user: ${record.username}`)}
+                            className="p-0 border-[#22C55E] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#22C55E]/5"
+                            style={{ padding: 0, borderColor: '#22C55E' }}
+                        >
+                            <img src={unblkIcon} alt="unblock" className="w-[18px] h-[18px]" />
+                        </Button>
+                    )}
+                </div>
+            ),
+        },
+    ];
     const filteredData = dataSource.filter((item) => {
         const matchesSearch = item.username.toLowerCase().includes(searchText.toLowerCase()) ||
             item.email.toLowerCase().includes(searchText.toLowerCase());

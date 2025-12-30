@@ -8,6 +8,7 @@ import ManageFaq from '../pages/ManageFaq';
 import TermsConditions from '../pages/TermsConditions';
 import PrivacyPolicy from '../pages/PrivacyPolicy';
 import ManageProfile from '../pages/ManageProfile';
+import UserDetails from '../pages/UserDetails';
 import 'antd/dist/reset.css';
 
 
@@ -19,6 +20,7 @@ export default function AppRoutes() {
             children: [
                 { index: true, element: <Dashboard /> },
                 { path: 'manage_users', element: <ManageUsers /> },
+                { path: 'manage_users/:id', element: <UserDetails /> },
                 { path: 'manage_claims', element: <ManageClaims /> },
                 { path: 'claimly_guides', element: <ClaimlyGuides /> },
                 { path: 'manage_faq', element: <ManageFaq /> },
