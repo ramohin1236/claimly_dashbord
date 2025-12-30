@@ -8,6 +8,8 @@ import ManageFaq from '../pages/ManageFaq';
 import TermsConditions from '../pages/TermsConditions';
 import PrivacyPolicy from '../pages/PrivacyPolicy';
 import ManageProfile from '../pages/ManageProfile';
+import 'antd/dist/reset.css';
+
 
 export default function AppRoutes() {
     const element = useRoutes([
