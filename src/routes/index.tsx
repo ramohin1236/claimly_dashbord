@@ -10,6 +10,7 @@ import PrivacyPolicy from '../pages/PrivacyPolicy';
 import ManageProfile from '../pages/ManageProfile';
 import UserDetails from '../pages/UserDetails';
 import 'antd/dist/reset.css';
+import ManageClaimDetails from '../components/manageClaim/ManageClaimDetails';
 
 
 export default function AppRoutes() {
@@ -22,6 +23,7 @@ export default function AppRoutes() {
                 { path: 'manage_users', element: <ManageUsers /> },
                 { path: 'manage_users/:id', element: <UserDetails /> },
                 { path: 'manage_claims', element: <ManageClaims /> },
+                { path: 'manage_claims/:id', element: <ManageClaimDetails /> },
                 { path: 'claimly_guides', element: <ClaimlyGuides /> },
                 { path: 'manage_faq', element: <ManageFaq /> },
                 { path: 'terms_conditions', element: <TermsConditions /> },

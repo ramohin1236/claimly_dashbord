@@ -28,7 +28,7 @@ export default function UserDetails() {
                 <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage Users</h1>
             </div>
 
-            <div className="max-w-[700px]">
+            <div className="max-w-7xl">
                 {/* Profile Image */}
                 <div className="flex mb-12 ml-4">
                     <div className="w-24 h-24 rounded-full border border-[#BFDBFE]/50 p-0.5 shadow-sm">
@@ -43,7 +43,7 @@ export default function UserDetails() {
                             <label className="text-sm font-semibold text-[#1E293B]">
                                 {detail.label}
                             </label>
-                            <div className="px-4 py-3 bg-white border border-[#BFDBFE] rounded-lg text-[#64748B] text-xs">
+                            <div className="px-4 py-3 bg-white border-2 border-[#BFDBFE] rounded-lg text-[#64748B] text-xs">
                                 {detail.value}
                             </div>
                         </div>
@@ -55,7 +55,7 @@ export default function UserDetails() {
                     <label className="text-sm font-semibold text-[#1E293B] block mb-2">
                         Status
                     </label>
-                    <div className="px-4 py-3 bg-white border border-[#BFDBFE]/50 rounded-lg">
+                    <div className="px-4 py-3 bg-white border-2 border-[#BFDBFE] rounded-lg">
                         <span className={`text-xs ${status === 'Active' ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
                             {status}
                         </span>

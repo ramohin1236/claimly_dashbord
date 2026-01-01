@@ -15,6 +15,7 @@ export default function UpdateFaqModal({ isOpen, onClose, onSave, initialData }:
 
     useEffect(() => {
         if (initialData) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setQuestion(initialData.question);
             setAnswer(initialData.answer);
         }
