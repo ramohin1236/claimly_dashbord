@@ -5,7 +5,7 @@ import frame3 from "../../public/Vector (3).svg";
 import { useState } from "react";
 import { Table, Button, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface ClaimData {
@@ -193,14 +193,18 @@ export default function ManageClaims() {
                 <div className="flex items-center gap-2">
                     <Link to={`/manage_claims/:id`}>
                         <Button
-
-                            className="p-0 border-[#5D5D5D] rounded-[4px] w-8 h-8 flex justify-center items-center"
+                            className="p-0 border-none rounded-[4px] w-8 h-8 flex justify-center items-center"
                             style={{ padding: 0 }}
                         >
                             <img src={frame3} alt="view" className="w-[18px] h-[18px]" />
                         </Button>
                     </Link>
-
+                    <Button
+                        className="p-0 border border-[#EF4444]! rounded-[4px] w-8 h-8 flex justify-center items-center"
+                        style={{ padding: 0 }}
+                    >
+                        <Trash2 size={16} className="text-[#EF4444]" />
+                    </Button>
                 </div>
             ),
         },
