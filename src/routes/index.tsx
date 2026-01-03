@@ -11,6 +11,8 @@ import ManageProfile from '../pages/ManageProfile';
 import UserDetails from '../pages/UserDetails';
 import 'antd/dist/reset.css';
 import ManageClaimDetails from '../components/manageClaim/ManageClaimDetails';
+import UpdateProfile from '../pages/UpdateProfile';
+import UpdatePassword from '../pages/UpdatePassword';
 
 
 export default function AppRoutes() {
@@ -29,6 +31,8 @@ export default function AppRoutes() {
                 { path: 'terms_conditions', element: <TermsConditions /> },
                 { path: 'privacy_policy', element: <PrivacyPolicy /> },
                 { path: 'manage_profile', element: <ManageProfile /> },
+                { path: 'update_profile', element: <UpdateProfile /> },
+                { path: 'update_password', element: <UpdatePassword /> },
             ],
         },
     ]);

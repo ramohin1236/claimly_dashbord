@@ -1,8 +1,13 @@
 import { LogOut } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../../public/Logo 3.svg';
+import sidenavcollapseLogo from '../../public/vite.svg';
 
-export default function Sidebar() {
+interface SidebarProps {
+  isCollapsed: boolean;
+}
+
+export default function Sidebar({ isCollapsed }: SidebarProps) {
   const navItems = [
     { icon: '/dashbord.svg', label: 'Dashboard', path: '/' },
     { icon: '/manageUser.svg', label: 'Manage Users', path: '/manage_users' },
@@ -15,12 +20,11 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="h-screen w-64 bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0 text-slate-800">
-      <div className="p-6 flex justify-center items-center" >
+    <div className={`h-screen bg-white border-r border-slate-200 flex flex-col fixed left-0 top-0 text-slate-800 transition-all duration-300 z-50 ${isCollapsed ? 'w-20' : 'w-64'}`}>
+      <div className={`p-6 flex justify-center items-center h-24 overflow-hidden`}>
         <Link to="/">
-          <img src={logo} alt="" className='w-36' />
+          <img src={isCollapsed ? sidenavcollapseLogo : logo} alt="" className={`transition-all duration-300 ${isCollapsed ? 'w-10 min-w-[40px] h-10' : 'w-36'}`} />
         </Link>
-
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
@@ -29,16 +33,17 @@ export default function Sidebar() {
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group ${isActive
-                ? 'bg-[#2563EB] border border-blue-100'
+              `flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group relative ${isActive
+                ? 'bg-[#2563EB] border border-blue-100 text-white'
                 : 'hover:bg-slate-50'
-              }`
+              } ${isCollapsed ? 'justify-center px-0' : ''}`
             }
+            title={isCollapsed ? item.label : ''}
           >
             {({ isActive }) => (
               <>
                 <div
-                  className={`w-5 h-5 transition-colors duration-200 ${isActive ? 'bg-white' : 'bg-gradient-to-r from-[#1E293B] to-[#2563EB]'}`}
+                  className={`w-5 h-5 transition-colors duration-200 flex-shrink-0 ${isActive ? 'bg-white' : 'bg-gradient-to-r from-[#1E293B] to-[#2563EB]'}`}
                   style={{
                     maskImage: `url(${item.icon})`,
                     WebkitMaskImage: `url(${item.icon})`,
@@ -50,19 +55,21 @@ export default function Sidebar() {
                     WebkitMaskSize: 'contain'
                   }}
                 />
-                <span className={`font-medium ${isActive ? 'text-white' : 'bg-gradient-to-r from-[#1E293B] to-[#2563EB] bg-clip-text text-transparent'}`}>
-                  {item.label}
-                </span>
+                {!isCollapsed && (
+                  <span className={`font-medium transition-all duration-300 opacity-100 whitespace-nowrap ${isActive ? 'text-white' : 'bg-gradient-to-r from-[#1E293B] to-[#2563EB] bg-clip-text text-transparent'}`}>
+                    {item.label}
+                  </span>
+                )}
               </>
             )}
           </NavLink>
         ))}
       </nav>
 
-      <div className="p-4 border-t border-slate-700">
-        <button className="flex items-center gap-3 px-4 py-3 w-full rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors">
-          <LogOut className="w-5 h-5" />
-          <span className="font-medium">Logout</span>
+      <div className="p-4 border-t border-slate-200">
+        <button className={`flex items-center gap-3 px-4 py-3 w-full rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors ${isCollapsed ? 'justify-center px-0' : ''}`}>
+          <LogOut className="w-5 h-5 flex-shrink-0" />
+          {!isCollapsed && <span className="font-medium whitespace-nowrap">Logout</span>}
         </button>
       </div>
     </div >

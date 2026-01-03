@@ -2,6 +2,7 @@ import dashboardIcon from "../../public/Group (4).svg";
 import useIcon from "../../public/Frame (13).svg";
 import updateIcon from "../../public/Group (15).svg";
 import updateIconblue from "../../public/Group (16).svg";
+import { Link } from "react-router-dom";
 
 
 export default function ManageProfile() {
@@ -37,14 +38,14 @@ export default function ManageProfile() {
 
                          {/* update button and password updaate butn */}
                     <div className="flex gap-4">
-                        <button className="bg-[#2563EB] h-11 px-6 text-white! py-2 rounded-lg border-none flex items-center gap-2 text-sm font-medium">
+                        <Link to="/update_profile" className="bg-[#2563EB] h-11 px-6 text-white! py-2 rounded-lg border-none flex items-center gap-2 text-sm font-medium">
                           <img src={updateIcon} alt="update" />
                             Update
-                        </button>
-                        <button className="border! border-[#2563EB]! h-11 px-6 text-[#2563EB]! py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
+                        </Link>
+                        <Link to="/update_password" className="border! border-[#2563EB]! h-11 px-6 text-[#2563EB]! py-2 rounded-lg flex items-center gap-2 text-sm font-medium">
                           <img src={updateIconblue} alt="update" />
                            Update Password
-                        </button>
+                        </Link>
                     </div>
 
 
