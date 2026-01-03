@@ -9,8 +9,8 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-6">
-            <div className='flex items-center gap-2 '>
-                <img src={dashbordIcon} alt="" />
+            <div className='flex gap-2'>
+                <img src={dashbordIcon} alt="" className="mb-2"/>
                 <h1 className="text-base text-[#1E293B]/80">Dashboard</h1>
             </div>
 
