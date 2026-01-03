@@ -1,6 +1,6 @@
-import { LogOut } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 import logo from '../../public/Logo 3.svg';
+import logout from '../../public/Group (20).svg';
 import sidenavcollapseLogo from '../../public/vite.svg';
 
 interface SidebarProps {
@@ -66,10 +66,10 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-slate-200">
-        <button className={`flex items-center gap-3 px-4 py-3 w-full rounded-lg text-slate-400 hover:bg-red-500/10 hover:text-red-400 transition-colors ${isCollapsed ? 'justify-center px-0' : ''}`}>
-          <LogOut className="w-5 h-5 flex-shrink-0" />
-          {!isCollapsed && <span className="font-medium whitespace-nowrap">Logout</span>}
+      <div className="p-[1px] my-2 bg-gradient-to-r from-[#1E293B] to-[#2563EB] rounded-md mx-2">
+        <button className={`flex items-center cursor-pointer gap-3 px-4 py-3 w-full rounded-[5px] bg-white hover:bg-slate-50 transition-colors ${isCollapsed ? 'justify-center px-0' : ''}`}>
+          <img src={logout} alt="" className="w-5 h-5 transition-transform group-hover:scale-110" />
+          {!isCollapsed && <span className="font-medium whitespace-nowrap bg-gradient-to-r from-[#1E293B] to-[#2563EB] bg-clip-text text-transparent">Logout</span>}
         </button>
       </div>
     </div >
