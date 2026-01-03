@@ -163,7 +163,7 @@ export default function ManageUsers() {
                     position: ["bottomCenter"],
                     showSizeChanger: false,
                 }}
-                className="custom-pagination"
+                className="custom-pagination guides-table"
             />
             <style>{`
                 .custom-select .ant-select-selector {
@@ -173,8 +173,20 @@ export default function ManageUsers() {
                     display: flex !important;
                     align-items: center !important;
                 }
+                    
                 .custom-select .ant-select-selection-placeholder {
                     color: #98A2B3 !important;
+                }
+            `}</style>
+            <style>{`
+                .guides-table .ant-table-thead > tr > th {
+                    background-color: #DBEAFE !important;
+                    color: #1E293B;
+                    font-weight: 500;
+                }
+                .guides-table .ant-table-tbody > tr > td {
+                    white-space: normal;
+                    word-wrap: break-word;
                 }
             `}</style>
         </div>
