@@ -4,7 +4,7 @@ import frame3 from "../../public/Frame (3).svg";
 import blkIcon from "../../public/Group (5).svg";
 import unblkIcon from "../../public/unblk.svg";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Table, Button, Input, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -35,6 +35,10 @@ export default function ManageUsers() {
     const navigate = useNavigate();
     const [searchText, setSearchText] = useState("");
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
+
+    const path = useLocation();
+    const pathName = path.pathname;
+
 
     const columns: ColumnsType<UserData> = [
         {
@@ -124,45 +128,67 @@ export default function ManageUsers() {
         return matchesSearch && matchesStatus;
     });
 
+    const displayData = pathName === "/manage_users" ? filteredData : filteredData.slice(0, 3);
+
     return (
         <div className="p-6">
 
             <div className="flex justify-between items-center mb-6">
-                <div className="flex gap-2">
-                    <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
-                    <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage Users</h1>
-                </div>
-                <div className="flex gap-4">
-                    <Select
-                        placeholder="Filter by Status"
-                        allowClear
-                        onChange={(value) => setStatusFilter(value)}
-                        className="w-[200px] h-10 custom-select"
-                        suffixIcon={<ChevronDown className="text-[#3B82F6] w-4 h-4" />}
-                        defaultValue={null}
-                    >
-                        <Select.Option value={null}>All</Select.Option>
-                        <Select.Option value="Active">Active</Select.Option>
-                        <Select.Option value="Inactive">Blocked</Select.Option>
-                    </Select>
-                    <Input
-                        placeholder="Search By Name"
-                        prefix={<Search className="text-[#98A2B3] w-4 h-4" />}
-                        value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
-                        className="w-[250px] h-10 border-[#3B82F6] hover:border-[#3B82F6] focus:border-[#3B82F6] rounded-[8px]"
-                    />
-                </div>
+                {
+                    pathName === "/manage_users" ? (
+                        <div className="flex gap-2">
+                            <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                            <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage Users</h1>
+                        </div>
+                    ) : (
+                        <div className="flex gap-2">
+
+                            <h1 className="text-md text-black m-0 leading-none">Recently joined  Users</h1>
+                        </div>
+                    )
+                }
+
+                {
+                    pathName === "/manage_users" ? (
+                        <div className="flex gap-4">
+                            <Select
+                                placeholder="Filter by Status"
+                                allowClear
+                                onChange={(value) => setStatusFilter(value)}
+                                className="w-[200px] h-10 custom-select"
+                                suffixIcon={<ChevronDown className="text-[#3B82F6] w-4 h-4" />}
+                                defaultValue={null}
+                            >
+                                <Select.Option value={null}>All</Select.Option>
+                                <Select.Option value="Active">Active</Select.Option>
+                                <Select.Option value="Inactive">Blocked</Select.Option>
+                            </Select>
+                            <Input
+                                placeholder="Search By Name"
+                                prefix={<Search className="text-[#98A2B3] w-4 h-4" />}
+                                value={searchText}
+                                onChange={(e) => setSearchText(e.target.value)}
+                                className="w-[250px] h-10 border-[#3B82F6] hover:border-[#3B82F6] focus:border-[#3B82F6] rounded-[8px]"
+                            />
+                        </div>
+                    ) : (
+                        <div>
+                            <Link to="/manage_users" className="text-[#2563EB]">See all</Link>
+                        </div>
+                    )
+                }
+                {/* Search and Filter */}
+
             </div>
 
             <Table<UserData>
-                dataSource={filteredData}
+                dataSource={displayData}
                 columns={columns}
-                pagination={{
+                pagination={pathName === "/manage_users" ? {
                     pageSize: 10,
                     position: ["bottomCenter"],
                     showSizeChanger: false,
-                }}
+                } : false}
                 className="custom-pagination guides-table"
             />
             <style>{`

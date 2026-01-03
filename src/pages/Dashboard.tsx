@@ -2,6 +2,7 @@
 import dashbordIcon from "../../public/dashbordPage.svg"
 import TopDash from '../components/dashboard/TopDash';
 import StackedBarChart from '../components/dashboard/StackedBarChart';
+import ManageUsers from "./ManageUsers";
 
 export default function Dashboard() {
 
@@ -17,6 +18,7 @@ export default function Dashboard() {
             <div>
                 <TopDash />
                 <StackedBarChart />
+                <ManageUsers/>
             </div>
 
         </div>
