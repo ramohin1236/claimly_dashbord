@@ -189,7 +189,7 @@ export default function ManageClaims() {
         {
             title: "Actions",
             key: "actions",
-            render: (_, record: ClaimData) => (
+            render: () => (
                 <div className="flex items-center gap-2">
                     <Link to={`/manage_claims/:id`}>
                         <Button

@@ -1,10 +1,15 @@
 import userIcon from "../../../public/Ellipse 2033 (1).svg";
 import righticon from "../../../public/Vector (4).svg";
+import documents from "../../../public/Frame (11).svg";
+import { useState } from "react";
 
 export default function ManageClaimDetails() {
+
+    const [claimStatus, _setClaimStatus] = useState("Failed");
+
     return (
         <div className="p-10 min-h-[90vh] rounded-3xl">
-            <div>
+            <div className="flex flex-col gap-4">
 
 
                 <div className="flex flex-col gap-4">
@@ -36,7 +41,18 @@ export default function ManageClaimDetails() {
 
                                 <div className="flex flex-col gap-1">
                                     <p className="text-[16px] text-[#1E293B] font-medium">Claim Status</p>
-                                    <p className="text-[#64748B] text-[14px]">Under Review</p>
+                                    <p
+                                        className={`text-[16px] font-medium ${claimStatus === "Under Review"
+                                            ? "text-[#F59E0B]"
+                                            : claimStatus === "Report Ready"
+                                                ? "text-[#22C55E]"
+                                                : claimStatus === "Failed"
+                                                    ? "text-[#F43F5E]"
+                                                    : "text-[#64748B]"
+                                            }`}
+                                    >
+                                        {claimStatus}
+                                    </p>
                                 </div>
                             </div>
 
@@ -106,7 +122,7 @@ export default function ManageClaimDetails() {
 
                         </div>
 
-                    
+
                     </div>
                     {/* fifth */}
                     <div className="flex gap-4">
@@ -122,7 +138,7 @@ export default function ManageClaimDetails() {
 
                         </div>
 
-                    
+
                     </div>
                     {/* seventh */}
                     <div className="flex gap-4">
@@ -138,7 +154,7 @@ export default function ManageClaimDetails() {
 
                         </div>
 
-                    
+
                     </div>
                     {/* eighth */}
                     <div className="flex gap-4">
@@ -154,7 +170,7 @@ export default function ManageClaimDetails() {
 
                         </div>
 
-                    
+
                     </div>
                     {/* ninth */}
                     <div className="flex gap-4">
@@ -170,9 +186,61 @@ export default function ManageClaimDetails() {
 
                         </div>
 
-                    
+
                     </div>
                 </div>
+
+                {/* supporting report */}
+
+                <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4">
+                    <p>Supporting Documents</p>
+                    <div className="flex flex-col gap-4">
+                        {/* first */}
+                        <div className="bg-[#DBEAFE] flex items-center gap-2 py-3 px-4 rounded-lg">
+                            <div> <img src={documents} alt="" /> </div>
+                            <div> <p>Documents 01.pdf</p> </div>
+                        </div>
+                        {/* first */}
+                        <div className="bg-[#DBEAFE] flex items-center gap-2 py-3 px-4 rounded-lg">
+                            <div> <img src={documents} alt="" /> </div>
+                            <div> <p>Documents 01.pdf</p> </div>
+                        </div>
+                        {/* first */}
+                        <div className="bg-[#DBEAFE] flex items-center gap-2 py-3 px-4 rounded-lg">
+                            <div> <img src={documents} alt="" /> </div>
+                            <div> <p>Documents 01.pdf</p> </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {claimStatus === "Report Ready" && (
+                    <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4">
+                        <p>Claim Evaluation Report</p>
+                        <div className="flex flex-col gap-4">
+                            <div className="bg-[#DBEAFE] flex items-center gap-2 py-3 px-4 rounded-lg">
+                                <div>
+                                    <img src={documents} alt="" />
+                                </div>
+                                <div>
+                                    <p>Documents 01.pdf</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {claimStatus === "Failed" && (
+                    <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4">
+                        <p className="text-[#EF4444]">Failure Note</p>
+                        <div className="flex flex-col gap-4">
+                            <p className="text-[#64748B]">
+                                The documents provided don't clearly relate to the claim decision.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
             </div>
         </div>
     );
