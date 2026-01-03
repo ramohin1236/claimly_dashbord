@@ -121,6 +121,36 @@ const data2025 = [
     pv: 6300,
     amt: 2100,
   },
+   {
+    name: 'Aug',
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+  {
+    name: 'Sep',
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+  {
+    name: 'Oct',
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+  {
+    name: 'Nov',
+    uv: 0,
+    pv: 0,
+    amt: 0,
+  },
+  {
+    name: 'Dec',
+    uv: 0,
+    pv: 0,
+    amt: 0,
+  },
 ];
 
 // #endregion
@@ -161,12 +191,14 @@ const StackedBarChart = () => {
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" />
-            <YAxis width="auto" />
+            <YAxis width={100} />
             <Tooltip cursor={{ fill: 'transparent' }} />
             <Legend />
             <Bar dataKey="pv" fill="url(#barGradient)" radius={[4, 4, 0, 0]} />
             <RechartsDevtools />
           </BarChart>
+
+       
         </ResponsiveContainer>
       </div>
     </div>
