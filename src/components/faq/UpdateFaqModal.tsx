@@ -1,4 +1,4 @@
-import { Modal, Input, Button } from "antd";
+import { Modal, Input} from "antd";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -65,19 +65,19 @@ export default function UpdateFaqModal({ isOpen, onClose, onSave, initialData }:
                 </div>
 
                 <div className="flex gap-4 pt-4 pb-2">
-                    <Button
+                    <button
                         onClick={onClose}
-                        className="flex-1 h-12 border-[#FF4151] !text-[#FF4151] hover:!bg-[#FF4151]/5 rounded-xl font-medium"
+                        className="flex-1 py-2 border h-12 border-[#FF4151] !text-[#FF4151] hover:!bg-[#FF4151]/5 rounded-md font-medium"
                     >
                         Cancel
-                    </Button>
-                    <Button
-                        type="primary"
+                    </button>
+                    <button
+                      
                         onClick={() => onSave({ question, answer })}
-                        className="flex-1 h-12 bg-[#2563EB] hover:bg-[#1D4ED8] rounded-xl font-medium border-none shadow-none"
+                        className="flex-1 h-12 bg-[#2563EB] hover:bg-[#1D4ED8] text-white! py-2 rounded-md font-medium border-none shadow-none"
                     >
                         Save Changes
-                    </Button>
+                    </button>
                 </div>
             </div>
 

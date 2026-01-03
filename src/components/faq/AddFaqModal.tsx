@@ -1,4 +1,4 @@
-import { Modal, Input, Button } from "antd";
+import { Modal, Input } from "antd";
 import { X } from "lucide-react";
 
 interface AddFaqModalProps {
@@ -48,19 +48,19 @@ export default function AddFaqModal({ isOpen, onClose, onSave }: AddFaqModalProp
                 </div>
 
                 <div className="flex gap-4 pt-4 pb-2">
-                    <Button
+                    <button
                         onClick={onClose}
-                        className="flex-1 h-12 border-[#FF4151] text-[#FF4151] hover:bg-[#FF4151]/5 rounded-xl font-medium"
+                        className="flex-1 h-12 border-[#FF4151] text-[#FF4151] hover:bg-[#FF4151]/5 rounded-md border text-[#EF4444]! font-medium"
                     >
                         Cancel
-                    </Button>
-                    <Button
-                        type="primary"
+                    </button>
+                    <button
+                     
                         onClick={() => onSave({ question: "Sample", answer: "Sample" })}
-                        className="flex-1 h-12 bg-[#2563EB] hover:bg-[#1D4ED8] rounded-xl font-medium border-none shadow-none"
+                        className="flex-1 h-12 bg-[#2563EB] hover:bg-[#1D4ED8] rounded-md font-medium border-none text-white! shadow-none"
                     >
                         Add FAQ
-                    </Button>
+                    </button>
                 </div>
             </div>
 

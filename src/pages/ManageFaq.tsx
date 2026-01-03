@@ -2,7 +2,7 @@ import dashboardIcon from "../../public/Group (4).svg";
 import faqrightIcon from "../../public/Frame (7).svg";
 import addFaqIcon from "../../public/Group (6).svg";
 import faqBubbleIcon from "../../public/manageFaq.svg";
-import { Button, Popover } from "antd";
+import { Popover } from "antd";
 import { useState } from "react";
 import AddFaqModal from "../components/faq/AddFaqModal";
 import UpdateFaqModal from "../components/faq/UpdateFaqModal";
@@ -92,14 +92,14 @@ export default function ManageFaq() {
                     <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
                     <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage FAQ</h1>
                 </div>
-                <Button
-                    type="primary"
+                <button
+                    
                     onClick={handleOpenModal}
-                    className="bg-[#3B82F6] hover:bg-[#2563EB] h-11 px-6 rounded-lg border-none flex items-center gap-2 text-sm font-medium"
+                    className="bg-[#2563EB] h-11 px-6 text-white! py-2 rounded-lg border-none flex items-center gap-2 text-sm font-medium"
                 >
                     <img src={addFaqIcon} alt="plus" className="w-4 h-4" />
                     Add New FAQ
-                </Button>
+                </button>
             </div>
 
             {/* FAQ List */}
