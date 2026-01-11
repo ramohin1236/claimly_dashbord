@@ -13,6 +13,11 @@ import 'antd/dist/reset.css';
 import ManageClaimDetails from '../components/manageClaim/ManageClaimDetails';
 import UpdateProfile from '../pages/UpdateProfile';
 import UpdatePassword from '../pages/UpdatePassword';
+import Login from '../authPage/Login';
+import ForgetPassword from '../authPage/ForgetPassword';
+import VerifyOtp from '../authPage/VerifyOtp';
+import SetNewPassword from '../authPage/SetNewPassword';
+import AuthLayout from '../components/AuthLayout';
 
 
 export default function AppRoutes() {
@@ -33,6 +38,16 @@ export default function AppRoutes() {
                 { path: 'manage_profile', element: <ManageProfile /> },
                 { path: 'update_profile', element: <UpdateProfile /> },
                 { path: 'update_password', element: <UpdatePassword /> },
+            ],
+        },
+        {
+            path: '/auth',
+            element: <AuthLayout />,
+            children: [
+                { path: 'login', element: <Login /> },
+                { path: 'forget-password', element: <ForgetPassword /> },
+                { path: 'verify-otp', element: <VerifyOtp /> },
+                { path: 'set-new-password', element: <SetNewPassword /> },
             ],
         },
     ]);

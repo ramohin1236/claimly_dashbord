@@ -1,5 +1,4 @@
 import dashboardIcon from "../../public/Group (4).svg";
-import userIcon from "../../public/Ellipse 2033.svg";
 import frame3 from "../../public/Frame (3).svg";
 import blkIcon from "../../public/Group (5).svg";
 import unblkIcon from "../../public/unblk.svg";
@@ -9,50 +8,59 @@ import { useState } from "react";
 import { Table, Button, Input, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search, ChevronDown } from "lucide-react";
+import { useGetUsersQuery } from "../store/api/userApi";
 
 interface UserData {
-    key: string;
-    username: string;
+    _id: string;
+    fullName: string;
     email: string;
     phone: string;
-    joinedOn: string;
-    status: "Active" | "Inactive";
+    createdAt: string;
+    isBlocked: boolean;
+    image?: string;
 }
-
-const dataSource: UserData[] = [
-
-    ...Array.from({ length: 15 }, (_, i) => ({
-        key: `${i + 3}`,
-        username: i % 2 === 0 ? "Ayesha Rahman" : "John Doe",
-        email: i % 2 === 0 ? "william.davis05@gmail.com" : "john.doe@gmail.com",
-        phone: "+1 919-555-0284",
-        joinedOn: "Jul 16, 2025",
-        status: i % 3 === 0 ? ("Inactive" as const) : ("Active" as const),
-    })),
-];
 
 export default function ManageUsers() {
     const navigate = useNavigate();
     const [searchText, setSearchText] = useState("");
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
+    const limit = 10;
 
     const path = useLocation();
     const pathName = path.pathname;
 
+    let isBlocked = undefined;
+    if (statusFilter === "Inactive") isBlocked = true;
+    if (statusFilter === "Active") isBlocked = false;
+
+    const { data, isLoading } = useGetUsersQuery({
+        page,
+        limit,
+        search: searchText,
+        isBlocked
+    });
+    console.log("user data", data)
 
     const columns: ColumnsType<UserData> = [
         {
             title: "User Name",
-            dataIndex: "username",
-            key: "username",
-            render: (username: string) => (
+            dataIndex: "fullName",
+            key: "fullName",
+            render: (fullName: string, record: UserData) => (
                 <div className="flex items-center gap-2">
-                    <img
-                        src={userIcon}
-                        alt="user"
-                        className="w-8 h-8 rounded-full"
-                    />
-                    <span className="text-[#333333] text-[16px]">{username}</span>
+                    {record.image ? (
+                        <img
+                            src={record.image}
+                            alt="user"
+                            className="w-8 h-8 rounded-full object-cover"
+                        />
+                    ) : (
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs uppercase">
+                            {fullName ? fullName.charAt(0) : "U"}
+                        </div>
+                    )}
+                    <span className="text-[#333333] text-[16px]">{fullName || "N/A"}</span>
                 </div>
             ),
         },
@@ -70,20 +78,20 @@ export default function ManageUsers() {
         },
         {
             title: "Joined On",
-            dataIndex: "joinedOn",
-            key: "joinedOn",
-            render: (text: string) => <span className="text-[14px] text-[#333333]">{text}</span>
+            dataIndex: "createdAt",
+            key: "createdAt",
+            render: (text: string) => <span className="text-[14px] text-[#333333]">{text ? new Date(text).toLocaleDateString() : "N/A"}</span>
         },
         {
             title: "Status",
-            dataIndex: "status",
-            key: "status",
-            render: (status: UserData["status"]) => (
+            dataIndex: "isBlocked",
+            key: "isBlocked",
+            render: (isBlocked: boolean) => (
                 <span
-                    className={`text-[14px] ${status === "Active" ? "text-[#22C55E]" : "text-[#EF4444]"
+                    className={`text-[14px] ${!isBlocked ? "text-[#22C55E]" : "text-[#EF4444]"
                         }`}
                 >
-                    {status === "Active" ? "Active" : "Blocked"}
+                    {!isBlocked ? "Active" : "Blocked"}
                 </span>
             ),
         },
@@ -93,16 +101,16 @@ export default function ManageUsers() {
             render: (_, record: UserData) => (
                 <div className="flex items-center gap-2">
                     <Button
-                        onClick={() => navigate(`/manage_users/${record.key}`)}
+                        onClick={() => navigate(`/manage_users/${record._id}`)}
                         className="p-0 border-[#5D5D5D] rounded-[4px] w-8 h-8 flex justify-center items-center"
                         style={{ padding: 0 }}
                     >
                         <img src={frame3} alt="user" className="w-[18px] h-[18px]" />
                     </Button>
 
-                    {record.status === "Active" ? (
+                    {!record.isBlocked ? (
                         <Button
-                            onClick={() => alert(`Blocking user: ${record.username}`)}
+                            onClick={() => alert(`Blocking user: ${record.fullName}`)}
                             className="p-0 border-[#EF4444] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#EF4444]/5"
                             style={{ padding: 0, borderColor: '#EF4444' }}
                         >
@@ -110,7 +118,7 @@ export default function ManageUsers() {
                         </Button>
                     ) : (
                         <Button
-                            onClick={() => alert(`Activating user: ${record.username}`)}
+                            onClick={() => alert(`Activating user: ${record.fullName}`)}
                             className="p-0 border-[#22C55E] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#22C55E]/5"
                             style={{ padding: 0, borderColor: '#22C55E' }}
                         >
@@ -121,18 +129,11 @@ export default function ManageUsers() {
             ),
         },
     ];
-    const filteredData = dataSource.filter((item) => {
-        const matchesSearch = item.username.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.email.toLowerCase().includes(searchText.toLowerCase());
-        const matchesStatus = statusFilter ? item.status === statusFilter : true;
-        return matchesSearch && matchesStatus;
-    });
 
-    const displayData = pathName === "/manage_users" ? filteredData : filteredData.slice(0, 3);
+    const displayData = data?.data?.data || [];
 
     return (
         <div className="p-6">
-
             <div className="flex justify-between items-center mb-6">
                 {
                     pathName === "/manage_users" ? (
@@ -142,8 +143,7 @@ export default function ManageUsers() {
                         </div>
                     ) : (
                         <div className="flex gap-2">
-
-                            <h1 className="text-md text-black m-0 leading-none">Recently joined  Users</h1>
+                            <h1 className="text-md text-black m-0 leading-none">Recently joined Users</h1>
                         </div>
                     )
                 }
@@ -154,7 +154,10 @@ export default function ManageUsers() {
                             <Select
                                 placeholder="Filter by Status"
                                 allowClear
-                                onChange={(value) => setStatusFilter(value)}
+                                onChange={(value) => {
+                                    setStatusFilter(value);
+                                    setPage(1);
+                                }}
                                 className="w-[200px] h-10 custom-select"
                                 suffixIcon={<ChevronDown className="text-[#3B82F6] w-4 h-4" />}
                                 defaultValue={null}
@@ -167,7 +170,10 @@ export default function ManageUsers() {
                                 placeholder="Search By Name"
                                 prefix={<Search className="text-[#98A2B3] w-4 h-4" />}
                                 value={searchText}
-                                onChange={(e) => setSearchText(e.target.value)}
+                                onChange={(e) => {
+                                    setSearchText(e.target.value);
+                                    setPage(1);
+                                }}
                                 className="w-[250px] h-10 border-[#3B82F6] hover:border-[#3B82F6] focus:border-[#3B82F6] rounded-[8px]"
                             />
                         </div>
@@ -177,15 +183,18 @@ export default function ManageUsers() {
                         </div>
                     )
                 }
-                {/* Search and Filter */}
-
             </div>
 
-            <Table<UserData>
+            <Table
+                loading={isLoading}
                 dataSource={displayData}
                 columns={columns}
+                rowKey="_id"
                 pagination={pathName === "/manage_users" ? {
-                    pageSize: 10,
+                    current: page,
+                    pageSize: limit,
+                    total: data?.data?.meta?.total || 0,
+                    onChange: (p) => setPage(p),
                     position: ["bottomCenter"],
                     showSizeChanger: false,
                 } : false}

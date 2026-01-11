@@ -1,5 +1,5 @@
 import dashboardIcon from "../../public/Group (4).svg";
-import userIcon from "../../public/Ellipse 2033.svg";
+import userIcon from "../../public/Ellipse 2033.svg"
 import frame3 from "../../public/Vector (3).svg";
 
 import { useState } from "react";
