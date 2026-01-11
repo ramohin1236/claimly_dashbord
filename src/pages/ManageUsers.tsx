@@ -8,7 +8,8 @@ import { useState } from "react";
 import { Table, Button, Input, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search, ChevronDown } from "lucide-react";
-import { useGetUsersQuery } from "../store/api/userApi";
+import { useGetUsersQuery, useToggleBlockUserMutation } from "../store/api/userApi";
+import { toast } from "sonner";
 
 interface UserData {
     _id: string;
@@ -26,6 +27,7 @@ export default function ManageUsers() {
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
     const [page, setPage] = useState(1);
     const limit = 10;
+    const [toggleBlockUser] = useToggleBlockUserMutation();
 
     const path = useLocation();
     const pathName = path.pathname;
@@ -40,6 +42,22 @@ export default function ManageUsers() {
         search: searchText,
         isBlocked
     });
+
+    const handleBlockToggle = async (userId: string, shouldBlock: boolean) => {
+        const action = shouldBlock ? "Blocking" : "Unblocking";
+        const toastId = toast.loading(`${action} user...`);
+        try {
+            const res = await toggleBlockUser(userId).unwrap();
+            if (res.success) {
+                toast.success(res.message || `User ${shouldBlock ? "blocked" : "unblocked"} successfully`, { id: toastId });
+            } else {
+                toast.error(res.message || `Failed to ${action.toLowerCase()} user`, { id: toastId });
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message || `Failed to ${action.toLowerCase()} user`, { id: toastId });
+        }
+    };
+
     console.log("user data", data)
 
     const columns: ColumnsType<UserData> = [
@@ -86,14 +104,17 @@ export default function ManageUsers() {
             title: "Status",
             dataIndex: "isBlocked",
             key: "isBlocked",
-            render: (isBlocked: boolean) => (
-                <span
-                    className={`text-[14px] ${!isBlocked ? "text-[#22C55E]" : "text-[#EF4444]"
-                        }`}
-                >
-                    {!isBlocked ? "Active" : "Blocked"}
-                </span>
-            ),
+            render: (_: boolean | string, record: UserData) => {
+                const isUserBlocked = record.isBlocked === true || String(record.isBlocked) === "true";
+                return (
+                    <span
+                        className={`text-[14px] ${!isUserBlocked ? "text-[#22C55E]" : "text-[#EF4444]"
+                            }`}
+                    >
+                        {!isUserBlocked ? "Active" : "Inactive"}
+                    </span>
+                );
+            },
         },
         {
             title: "Actions",
@@ -110,7 +131,7 @@ export default function ManageUsers() {
 
                     {!record.isBlocked ? (
                         <Button
-                            onClick={() => alert(`Blocking user: ${record.fullName}`)}
+                            onClick={() => handleBlockToggle(record._id, !record.isBlocked)}
                             className="p-0 border-[#EF4444] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#EF4444]/5"
                             style={{ padding: 0, borderColor: '#EF4444' }}
                         >
@@ -118,7 +139,7 @@ export default function ManageUsers() {
                         </Button>
                     ) : (
                         <Button
-                            onClick={() => alert(`Activating user: ${record.fullName}`)}
+                            onClick={() => handleBlockToggle(record._id, !record.isBlocked)}
                             className="p-0 border-[#22C55E] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#22C55E]/5"
                             style={{ padding: 0, borderColor: '#22C55E' }}
                         >

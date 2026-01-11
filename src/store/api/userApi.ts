@@ -19,7 +19,14 @@ export const userApi = apiSlice.injectEndpoints({
             },
             providesTags: ['User'],
         }),
+        toggleBlockUser: builder.mutation({
+            query: (id) => ({
+                url: `/auth/block-toggle/${id}`,
+                method: 'PATCH',
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
-export const { useGetUsersQuery } = userApi;
+export const { useGetUsersQuery, useToggleBlockUserMutation } = userApi;
