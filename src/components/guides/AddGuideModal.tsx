@@ -1,19 +1,33 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { useForm, type SubmitHandler } from "react-hook-form"
+import { useCreateClaimlyGuidesMutation } from "../../store/api/claimlyGuidesApi";
+import { toast } from "sonner";
 
 interface AddGuideModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (title: string, discrimination: string) => void;
+    onSave: (title: string, details: string) => void;
+}
+
+interface Inputs {
+    title: string;
+    details: string;
 }
 
 export default function AddGuideModal({
     isOpen,
     onClose,
-    onSave,
 }: AddGuideModalProps) {
-    const [guidesTitle, setGuidesTitle] = useState("");
-    const [guidesDiscrimination, setGuidesDiscrimination] = useState("");
+     const {
+        register,
+        handleSubmit,
+        reset
+       } = useForm<Inputs>()
+
+    const [ createClaimlyGuides, { isLoading }] = useCreateClaimlyGuidesMutation()
+
+
     const [isAnimating, setIsAnimating] = useState(false);
 
     useEffect(() => {
@@ -24,22 +38,8 @@ export default function AddGuideModal({
 
     if (!isOpen) return null;
 
-    const handleSave = () => {
-        if (!guidesTitle.trim()) {
-            alert("Please enter a guides title");
-            return;
-        }
-        if (!guidesDiscrimination.trim()) {
-            alert("Please enter guides discrimination");
-            return;
-        }
-        onSave(guidesTitle, guidesDiscrimination);
-        handleClose();
-    };
-
     const handleClose = () => {
-        setGuidesTitle("");
-        setGuidesDiscrimination("");
+     
         setIsAnimating(false);
         setTimeout(() => onClose(), 200);
     };
@@ -49,6 +49,21 @@ export default function AddGuideModal({
             handleClose();
         }
     };
+
+   
+    const onSubmit: SubmitHandler<Inputs> = async (data) =>{
+        try {
+            const response = await createClaimlyGuides(data)
+            if(response.data.success){
+                toast.success(response.data.message)
+                reset()
+                handleClose()
+            }
+            console.log(response)
+        } catch (error : any) {
+            toast.error(error.data.message)
+        }
+    }
 
     return (
         <div
@@ -75,50 +90,53 @@ export default function AddGuideModal({
                 <p className="text-sm text-[#64748B] mb-6 text-center">
                     Fill out the details below to add a Add New Guides. Ensure the Guides provides clarity and helps users quickly resolve their queries.
                 </p>
+                <div>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        {/* Guides Title Input */}
+                        <div className="mb-6 mt-4">
+                            <label className="block text-sm font-medium text-[#1E293B] mb-2">
+                                Guides Title
+                            </label>
+                            <input
+                                type="text"
+                                {...register("title")}
+                                placeholder="Enter the Guides Title"
+                                className="w-full px-4 py-3 border border-[#DBEAFE] rounded-lg focus:outline-none focus:border-[#2563EB] text-sm"
+                            />
+                        </div>
 
-                {/* Guides Title Input */}
-                <div className="mb-6 mt-4">
-                    <label className="block text-sm font-medium text-[#1E293B] mb-2">
-                        Guides Title
-                    </label>
-                    <input
-                        type="text"
-                        value={guidesTitle}
-                        onChange={(e) => setGuidesTitle(e.target.value)}
-                        placeholder="Enter the Guides Title"
-                        className="w-full px-4 py-3 border border-[#DBEAFE] rounded-lg focus:outline-none focus:border-[#2563EB] text-sm"
-                    />
+                        {/* Guides Discrimination Textarea */}
+                        <div className="mb-6">
+                            <label className="block text-sm font-medium text-[#1E293B] mb-2">
+                                Guides Discrimination
+                            </label>
+                            <textarea
+                                {...register("details")}
+                                placeholder="Enter the Guides Discrimination"
+                                className="w-full px-4 py-3 border border-[#DBEAFE] rounded-lg focus:outline-none focus:border-[#2563EB] resize-none text-sm"
+                                rows={6}
+                            />
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-3">
+                            <button
+                                onClick={handleClose}
+                                 type="button"
+                                className="flex-1 px-4 py-3 border border-[#EF4444] text-[#EF4444]! rounded-lg text-[#EF4444] font-medium hover:bg-gray-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                className="flex-1 px-4 py-3 bg-[#2563EB] text-white! rounded-lg font-medium hover:bg-[#1d4ed8] cursor-pointer"
+                            >
+                                {isLoading ? 'Adding...' : 'Add Guides'}
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
-                {/* Guides Discrimination Textarea */}
-                <div className="mb-6">
-                    <label className="block text-sm font-medium text-[#1E293B] mb-2">
-                        Guides Discrimination
-                    </label>
-                    <textarea
-                        value={guidesDiscrimination}
-                        onChange={(e) => setGuidesDiscrimination(e.target.value)}
-                        placeholder="Enter the Guides Discrimination"
-                        className="w-full px-4 py-3 border border-[#DBEAFE] rounded-lg focus:outline-none focus:border-[#2563EB] resize-none text-sm"
-                        rows={6}
-                    />
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3">
-                    <button
-                        onClick={handleClose}
-                        className="flex-1 px-4 py-3 border border-[#EF4444] text-[#EF4444]! rounded-lg text-[#EF4444] font-medium hover:bg-gray-50"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={handleSave}
-                        className="flex-1 px-4 py-3 bg-[#2563EB] text-white! rounded-lg font-medium hover:bg-[#1d4ed8]"
-                    >
-                        Add Guides
-                    </button>
-                </div>
             </div>
         </div>
     );
