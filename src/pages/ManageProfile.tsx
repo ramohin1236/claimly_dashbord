@@ -7,10 +7,12 @@ import { Link } from "react-router-dom";
 
 export default function ManageProfile() {
     return (
-        <div className="p-6">
+        <div className="space-y-6">
             <div className="flex justify-between mb-10">
                 <div className="flex gap-2">
-                    <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                   <Link to="/privacy_policy">
+                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                           </Link>
                     <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage Profile </h1>
                 </div>
 

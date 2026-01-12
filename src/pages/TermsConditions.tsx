@@ -3,6 +3,7 @@ import dashboardIcon from "../../public/Group (4).svg";
 import { useRef, useState } from "react";
 import { useCreateTermsConditionsMutation } from "../store/api/webApi";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 
 export default function TermsConditions() {
@@ -45,10 +46,12 @@ export default function TermsConditions() {
   };
 
   return (
-    <div className="p-6">
+    <div className="space-y-6">
       <div className="flex justify-between mb-10">
         <div className="flex gap-2">
-          <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+          <Link to="/manage_faq">
+                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                           </Link>
           <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Terms & Conditions</h1>
         </div>
 

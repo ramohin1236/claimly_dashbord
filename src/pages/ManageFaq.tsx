@@ -7,6 +7,7 @@ import { useState } from "react";
 import AddFaqModal from "../components/faq/AddFaqModal";
 import UpdateFaqModal from "../components/faq/UpdateFaqModal";
 import { PencilLine, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const faqData = [
     {
@@ -82,11 +83,13 @@ export default function ManageFaq() {
     );
 
     return (
-        <div className="p-8 bg-[#F8FAFC] min-h-screen">
+        <div className="space-y-6 bg-[#F8FAFC] min-h-screen">
             {/* Header */}
             <div className="flex justify-between items-center mb-10">
                 <div className="flex gap-2">
-                    <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                   <Link to="/claimly_guides">
+                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                           </Link>
                     <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage FAQ</h1>
                 </div>
                 <button

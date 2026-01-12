@@ -7,6 +7,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import AddGuideModal from "../components/guides/AddGuideModal";
 import EditGuideModal from "../components/guides/EditGuideModal";
+import { Link } from "react-router-dom";
 
 interface GuideData {
     key: string;
@@ -127,10 +128,12 @@ export default function ClaimlyGuides() {
     ];
 
     return (
-        <div className="p-6">
+        <div className="space-y-6">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex gap-2">
-                    <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                   <Link to="/manage_claims">
+                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                           </Link>
                     <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Claimly Guides</h1>
                 </div>
                 <button

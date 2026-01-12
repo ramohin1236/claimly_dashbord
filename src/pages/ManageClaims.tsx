@@ -216,10 +216,12 @@ export default function ManageClaims() {
     });
 
     return (
-        <div className="p-6">
+        <div className="space-y-6">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex gap-2">
-                    <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                    <Link to="/manage_users">
+                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                           </Link>
                     <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage Claims</h1>
                 </div>
                 <div className="flex gap-4">

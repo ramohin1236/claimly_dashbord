@@ -3,6 +3,7 @@ import userIcon from "../../public/Ellipse 2033 (1).svg";
 import dashboardIcon from "../../public/Group (4).svg";
 import unblkIcon from "../../public/unblk.svg";
 import blkIcon from "../../public/Group (5).svg";
+import { Link } from "react-router-dom";
 
 export default function UserDetails() {
 
@@ -24,7 +25,9 @@ export default function UserDetails() {
         <div className="p-10 bg-white min-h-[90vh] rounded-3xl">
             {/* Header */}
             <div className="flex gap-2">
-                <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                <Link to="/manage_users">
+                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                           </Link>
                 <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage Users</h1>
             </div>
 
