@@ -18,26 +18,32 @@ import ForgetPassword from '../authPage/ForgetPassword';
 import VerifyOtp from '../authPage/VerifyOtp';
 import SetNewPassword from '../authPage/SetNewPassword';
 import AuthLayout from '../components/AuthLayout';
+import ProtectedRoute from './ProtectedRoute';
 
 
 export default function AppRoutes() {
     const element = useRoutes([
         {
             path: '/',
-            element: <Layout />,
+            element: <ProtectedRoute />,
             children: [
-                { index: true, element: <Dashboard /> },
-                { path: 'manage_users', element: <ManageUsers /> },
-                { path: 'manage_users/:id', element: <UserDetails /> },
-                { path: 'manage_claims', element: <ManageClaims /> },
-                { path: 'manage_claims/:id', element: <ManageClaimDetails /> },
-                { path: 'claimly_guides', element: <ClaimlyGuides /> },
-                { path: 'manage_faq', element: <ManageFaq /> },
-                { path: 'terms_conditions', element: <TermsConditions /> },
-                { path: 'privacy_policy', element: <PrivacyPolicy /> },
-                { path: 'manage_profile', element: <ManageProfile /> },
-                { path: 'update_profile', element: <UpdateProfile /> },
-                { path: 'update_password', element: <UpdatePassword /> },
+                {
+                    element: <Layout />,
+                    children: [
+                        { index: true, element: <Dashboard /> },
+                        { path: 'manage_users', element: <ManageUsers /> },
+                        { path: 'manage_users/:id', element: <UserDetails /> },
+                        { path: 'manage_claims', element: <ManageClaims /> },
+                        { path: 'manage_claims/:id', element: <ManageClaimDetails /> },
+                        { path: 'claimly_guides', element: <ClaimlyGuides /> },
+                        { path: 'manage_faq', element: <ManageFaq /> },
+                        { path: 'terms_conditions', element: <TermsConditions /> },
+                        { path: 'privacy_policy', element: <PrivacyPolicy /> },
+                        { path: 'manage_profile', element: <ManageProfile /> },
+                        { path: 'update_profile', element: <UpdateProfile /> },
+                        { path: 'update_password', element: <UpdatePassword /> },
+                    ],
+                }
             ],
         },
         {
