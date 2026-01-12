@@ -37,6 +37,7 @@ const faqData = [
 ];
 
 export default function ManageFaq() {
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [selectedFaq, setSelectedFaq] = useState<{ id: number; question: string; answer: string } | null>(null);
@@ -53,10 +54,6 @@ export default function ManageFaq() {
         setSelectedFaq(null);
     };
 
-    const handleSaveFaq = (values: { question: string; answer: string }) => {
-        console.log("Saving FAQ:", values);
-        setIsModalOpen(false);
-    };
 
     const handleUpdateFaq = (values: { question: string; answer: string }) => {
         console.log("Updating FAQ:", selectedFaq?.id, values);
@@ -93,7 +90,7 @@ export default function ManageFaq() {
                     <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage FAQ</h1>
                 </div>
                 <button
-                    
+
                     onClick={handleOpenModal}
                     className="bg-[#2563EB] h-11 px-6 text-white! py-2 rounded-lg border-none flex items-center gap-2 text-sm font-medium"
                 >
@@ -143,7 +140,6 @@ export default function ManageFaq() {
             <AddFaqModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
-                onSave={handleSaveFaq}
             />
 
             <UpdateFaqModal

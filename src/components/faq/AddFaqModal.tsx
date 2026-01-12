@@ -1,13 +1,39 @@
 import { Modal, Input } from "antd";
 import { X } from "lucide-react";
+import { useCreateFAQMutation } from "../../store/api/webApi";
+import { useForm, type SubmitHandler, Controller } from "react-hook-form";
+import { toast } from "sonner";
 
 interface AddFaqModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (values: { question: string; answer: string }) => void;
 }
+type Inputs = {
+    question: string
+    answer: string
+}
+export default function AddFaqModal({ isOpen, onClose }: AddFaqModalProps) {
+    const {
+        control,
+        handleSubmit,
+        reset
+    } = useForm<Inputs>();
 
-export default function AddFaqModal({ isOpen, onClose, onSave }: AddFaqModalProps) {
+    const [createFAQ, { isLoading }] = useCreateFAQMutation();
+
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        try {
+            const res = await createFAQ(data).unwrap();
+            console.log(res);
+            toast.success("FAQ added successfully!");
+            reset();
+            onClose();
+        } catch (err: any) {
+            console.error(err);
+            toast.error(err?.data?.message || "Something went wrong");
+        }
+    };
+
     return (
         <Modal
             open={isOpen}
@@ -25,14 +51,24 @@ export default function AddFaqModal({ isOpen, onClose, onSave }: AddFaqModalProp
                 </p>
             </div>
 
-            <div className="space-y-6">
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-6"
+            >
                 <div className="space-y-2">
                     <label className="text-sm font-semibold text-[#1E293B]">
                         Question for the FAQ
                     </label>
-                    <Input
-                        placeholder="Enter the FAQ"
-                        className="h-12 border-[#BFDBFE] hover:border-[#3B82F6] focus:border-[#3B82F6] rounded-xl text-sm placeholder:text-[#94A3B8]"
+                    <Controller
+                        name="question"
+                        control={control}
+                        render={({ field }) => (
+                            <Input
+                                {...field}
+                                placeholder="Enter the FAQ"
+                                className="h-12 border-[#BFDBFE] hover:border-[#3B82F6] focus:border-[#3B82F6] rounded-xl text-sm placeholder:text-[#94A3B8]"
+                            />
+                        )}
                     />
                 </div>
 
@@ -40,29 +76,37 @@ export default function AddFaqModal({ isOpen, onClose, onSave }: AddFaqModalProp
                     <label className="text-sm font-semibold text-[#1E293B]">
                         Answer to the FAQ
                     </label>
-                    <Input.TextArea
-                        placeholder="Enter the FAQ Answer"
-                        rows={5}
-                        className="border-[#BFDBFE] hover:border-[#3B82F6] focus:border-[#3B82F6] rounded-xl text-sm placeholder:text-[#94A3B8] py-3 pb-8"
+                    <Controller
+                        name="answer"
+                        control={control}
+                        render={({ field }) => (
+                            <Input.TextArea
+                                {...field}
+                                placeholder="Enter the FAQ Answer"
+                                rows={5}
+                                className="border-[#BFDBFE] hover:border-[#3B82F6] focus:border-[#3B82F6] rounded-xl text-sm placeholder:text-[#94A3B8] py-3 pb-8"
+                            />
+                        )}
                     />
                 </div>
 
                 <div className="flex gap-4 pt-4 pb-2">
                     <button
                         onClick={onClose}
+                        type="button"
                         className="flex-1 h-12 border-[#FF4151] text-[#FF4151] hover:bg-[#FF4151]/5 rounded-md border text-[#EF4444]! font-medium"
                     >
                         Cancel
                     </button>
                     <button
-                     
-                        onClick={() => onSave({ question: "Sample", answer: "Sample" })}
-                        className="flex-1 h-12 bg-[#2563EB] hover:bg-[#1D4ED8] rounded-md font-medium border-none text-white! shadow-none"
+                        type="submit"
+                        disabled={isLoading}
+                        className="flex-1 h-12 bg-[#2563EB] hover:bg-[#1D4ED8] rounded-md font-medium border-none text-white! shadow-none disabled:opacity-50"
                     >
-                        Add FAQ
+                        {isLoading ? "Adding..." : "Add FAQ"}
                     </button>
                 </div>
-            </div>
+            </form>
 
             <style>{`
                 .custom-modal .ant-modal-content {
