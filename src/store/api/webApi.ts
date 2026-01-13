@@ -22,13 +22,22 @@ export const webApi = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
+            invalidatesTags: [{ type: 'FAQ', id: 'LIST' }]
         }),
-        
+        getFaq: builder.query<any, void>({
+            query: () => ({
+                url: '/manage-Web/get-faq',
+                method: 'GET'
+            }),
+            providesTags: [{ type: 'FAQ', id: 'LIST' }]
+        }),
+
     }),
 });
 
-export const { 
+export const {
     useCreateTermsConditionsMutation,
     useCreatePrivacyPolicyMutation,
-    useCreateFAQMutation 
- } = webApi;
+    useCreateFAQMutation,
+    useGetFaqQuery
+} = webApi;

@@ -8,41 +8,18 @@ import AddFaqModal from "../components/faq/AddFaqModal";
 import UpdateFaqModal from "../components/faq/UpdateFaqModal";
 import { PencilLine, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useGetFaqQuery } from "../store/api/webApi";
 
-const faqData = [
-    {
-        id: 1,
-        question: "How do I log in to Claimly?",
-        answer: "You can log in using the email and password you used when creating your Claimly account. If you've forgotten your password, use the \"Forgot password\" option on the login page."
-    },
-    {
-        id: 2,
-        question: "Can I update my account information?",
-        answer: "Yes. You can update basic account details such as your name and password from your profile settings."
-    },
-    {
-        id: 3,
-        question: "How do I submit an insurance claim for review?",
-        answer: "Click Analyse my claim, answer the guided questions, upload your documents, and submit the form. Our team will review your claim and prepare a report."
-    },
-    {
-        id: 4,
-        question: "How will I receive my claim report?",
-        answer: "Once your claim is reviewed, you'll receive an email notification. You can also download the PDF report directly from the My Claims page."
-    },
-    {
-        id: 5,
-        question: "Why is my claim still under review?",
-        answer: "Most reports are prepared within 24–48 hours. If your claim is under review, it means a specialist is currently assessing your documents. We'll contact you if any additional information is needed."
-    }
-];
+
 
 export default function ManageFaq() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [selectedFaq, setSelectedFaq] = useState<{ id: number; question: string; answer: string } | null>(null);
-
+    const { data } = useGetFaqQuery()
+    const faqData = data?.data
+    console.log("faqData", faqData)
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => setIsModalOpen(false);
 
@@ -87,9 +64,9 @@ export default function ManageFaq() {
             {/* Header */}
             <div className="flex justify-between items-center mb-10">
                 <div className="flex gap-2">
-                   <Link to="/claimly_guides">
-                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
-                           </Link>
+                    <Link to="/claimly_guides">
+                        <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                    </Link>
                     <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage FAQ</h1>
                 </div>
                 <button
@@ -104,7 +81,7 @@ export default function ManageFaq() {
 
             {/* FAQ List */}
             <div className="space-y-4">
-                {faqData.map((faq) => (
+                {faqData?.map((faq: any) => (
                     <div
                         key={faq.id}
                         className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-start gap-4 transition-all hover:shadow-md group relative"
