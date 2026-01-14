@@ -26,7 +26,18 @@ export const userApi = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['User'],
         }),
+        getSingleUser: builder.query({
+            query: (id) => ({
+                url: `/normal-User/${id}`,
+                method: 'GET',
+            }),
+           providesTags: ['User'],
+        }),
     }),
 });
 
-export const { useGetUsersQuery, useToggleBlockUserMutation } = userApi;
+export const { 
+    useGetUsersQuery, 
+    useToggleBlockUserMutation, 
+    useGetSingleUserQuery 
+} = userApi;

@@ -123,7 +123,7 @@ export default function ManageUsers() {
             render: (_, record: UserData) => (
                 <div className="flex items-center gap-2">
                     <Button
-                        onClick={() => navigate(`/manage_users/${record._id}`)}
+                        onClick={() => navigate(`/manage_users/${record?._id}`)}
                         className="p-0 border-[#5D5D5D] rounded-[4px] w-8 h-8 flex justify-center items-center"
                         style={{ padding: 0 }}
                     >
