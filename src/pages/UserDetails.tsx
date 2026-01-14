@@ -1,5 +1,4 @@
 // removed unused import
-import userIcon from "../../public/Ellipse 2033 (1).svg";
 import dashboardIcon from "../../public/Group (4).svg";
 import unblkIcon from "../../public/unblk.svg";
 import blkIcon from "../../public/Group (5).svg";
@@ -70,9 +69,19 @@ export default function UserDetails() {
             <div className="max-w-7xl">
                 {/* Profile Image */}
                 <div className="flex mb-12 ml-4">
-                    <div className="w-24 h-24 rounded-full border border-[#BFDBFE]/50 p-0.5 shadow-sm">
-                        <img src={userIcon} alt="Profile" className="w-full h-full object-cover rounded-full" />
-                    </div>
+                    {user?.data?.user?.profile_image ? (
+                        <div className="w-24 h-24 rounded-full border border-[#BFDBFE]/50 p-0.5 shadow-sm">
+                            <img
+                                src={`http://192.168.10.160:5000/${user.data.user.profile_image.replace(/\\/g, '/')}`}
+                                alt="Profile"
+                                className="w-full h-full object-cover rounded-full"
+                            />
+                        </div>
+                    ) : (
+                        <div className="w-24 h-24 rounded-full bg-[#DBEAFE] border border-[#BFDBFE] flex items-center justify-center text-[#2563EB] text-3xl font-bold shadow-sm">
+                            {user?.data?.user?.fullName?.charAt(0).toUpperCase() || "U"}
+                        </div>
+                    )}
                 </div>
 
                 {/* Details Grid */}

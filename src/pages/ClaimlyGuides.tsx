@@ -36,15 +36,15 @@ export default function ClaimlyGuides() {
         key: item._id,
         sl: index + 1
     })) || [];
-    console.log("guidesssssss===>>",guides);
+    
     const handleEditGuide = async (id: string, title: string, details: string) => {
         const toastId = toast.loading("Updating guide...");
         try {
             const res = await updateGuide({ id, data: { title, details } }).unwrap();
-            if (res.success) {
-                toast.success(res.message || "Guide updated successfully", { id: toastId });
+            if (res?.success) {
+                toast.success(res?.message || "Guide updated successfully", { id: toastId });
             } else {
-                toast.error(res.message || "Failed to update guide", { id: toastId });
+                toast.error(res?.message || "Failed to update guide", { id: toastId });
             }
         } catch (err: any) {
             toast.error(err?.data?.message || "Failed to update guide", { id: toastId });

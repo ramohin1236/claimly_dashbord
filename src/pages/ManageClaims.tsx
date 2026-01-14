@@ -1,5 +1,4 @@
 import dashboardIcon from "../../public/Group (4).svg";
-import userIcon from "../../public/Ellipse 2033.svg"
 import frame3 from "../../public/Vector (3).svg";
 
 import { useState } from "react";
@@ -7,161 +6,83 @@ import { Table, Button, Select } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { ChevronDown, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useGetInsurerClaimsQuery } from "../store/api/insurerApi";
+import dayjs from "dayjs";
 
 interface ClaimData {
+    _id: string;
     key: string;
-    username: string;
+    fullName: string;
     email: string;
-    insuredWith: string;
+    profile_image: string;
+    insurerName: string;
     policyType: string;
     submittedOn: string;
-    status: "Under Review" | "Report Ready" | "Failed";
+    status: "UNDER_REVIEW" | "REPORT_READY" | "FAILED";
 }
 
-const dataSource: ClaimData[] = [
-    {
-        key: "1",
-        username: "Ayesha Rahman",
-        email: "rafiul.dev@gmail.com",
-        insuredWith: "NRMA",
-        policyType: "Comprehensive",
-        submittedOn: "Jul 16, 2025",
-        status: "Under Review",
-    },
-    {
-        key: "2",
-        username: "Chris Brown",
-        email: "kamrul.tech@gmail.com",
-        insuredWith: "AAMI",
-        policyType: "Third Party Fire &...",
-        submittedOn: "Jul 16, 2025",
-        status: "Under Review",
-    },
-    {
-        key: "3",
-        username: "Linda Perez",
-        email: "fahim.tech@gmail.com",
-        insuredWith: "RACQ",
-        policyType: "Comprehensive Ba...",
-        submittedOn: "Jul 16, 2025",
-        status: "Under Review",
-    },
-    {
-        key: "4",
-        username: "Emily Carter",
-        email: "noman.bd@gmail.com",
-        insuredWith: "AAMI",
-        policyType: "Comprehensive",
-        submittedOn: "Jul 16, 2025",
-        status: "Under Review",
-    },
-    {
-        key: "5",
-        username: "Sophia White",
-        email: "arif.design@gmail.com",
-        insuredWith: "Suncorp",
-        policyType: "Third Party Fire &...",
-        submittedOn: "Jul 16, 2025",
-        status: "Under Review",
-    },
-    {
-        key: "6",
-        username: "Olivia Martinez",
-        email: "nahid.dev@gmail.com",
-        insuredWith: "Allianz",
-        policyType: "Comprehensive Ba...",
-        submittedOn: "Jul 16, 2025",
-        status: "Report Ready",
-    },
-    {
-        key: "7",
-        username: "Robert Davis",
-        email: "rakib.dev@gmail.com",
-        insuredWith: "Allianz",
-        policyType: "Comprehensive",
-        submittedOn: "Jul 16, 2025",
-        status: "Report Ready",
-    },
-    {
-        key: "8",
-        username: "Sophia White",
-        email: "mahmud.ui@gmail.com",
-        insuredWith: "Budget Direct",
-        policyType: "Comprehensive Ba...",
-        submittedOn: "Jul 16, 2025",
-        status: "Report Ready",
-    },
-    {
-        key: "9",
-        username: "Karen Thompson",
-        email: "riyad.ui@gmail.com",
-        insuredWith: "Suncorp",
-        policyType: "Third Party Fire &...",
-        submittedOn: "Jul 16, 2025",
-        status: "Report Ready",
-    },
-    {
-        key: "10",
-        username: "Anthony Clark",
-        email: "rafiul.dev@gmail.com",
-        insuredWith: "Suncorp",
-        policyType: "Third Party Proper...",
-        submittedOn: "Jul 16, 2025",
-        status: "Failed",
-    },
-    {
-        key: "11",
-        username: "Thomas Baker",
-        email: "sakib.cse@gmail.com",
-        insuredWith: "Budget Direct",
-        policyType: "Comprehensive Pl...",
-        submittedOn: "Jul 16, 2025",
-        status: "Failed",
-    },
-    ...Array.from({ length: 4 }, (_, i) => ({
-        key: `${i + 12}`,
-        username: i % 2 === 0 ? "Ayesha Rahman" : "John Doe",
-        email: i % 2 === 0 ? "william.davis05@gmail.com" : "john.doe@gmail.com",
-        insuredWith: "NRMA",
-        policyType: "Comprehensive",
-        submittedOn: "Jul 16, 2025",
-        status: (i % 3 === 0 ? "Failed" : "Under Review") as ClaimData["status"],
-    })),
-];
-
 export default function ManageClaims() {
-    const [statusFilter, setStatusFilter] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
+    const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
+    const limit = 10;
+
+    const { data: claimsData, isLoading } = useGetInsurerClaimsQuery<any>({
+        page,
+        limit,
+        status: statusFilter,
+    });
+
+     console.log("first", claimsData )
+    const claims = claimsData?.data?.data?.map((item: any) => ({
+        ...item,
+        key: item._id,
+        fullName: item.normalUserId?.fullName || "N/A",
+        email: item.normalUserId?.email || "N/A",
+        profile_image: item.normalUserId?.profile_image,
+        submittedOn: dayjs(item.createdAt).format("MMM DD, YYYY"),
+    })) || [];
 
     const columns: ColumnsType<ClaimData> = [
         {
             title: "User Info",
-            dataIndex: "username",
-            key: "username",
-            render: (username: string, record: ClaimData) => (
-                <div className="flex items-center gap-2">
-                    <img
-                        src={userIcon}
-                        alt="user"
-                        className="w-8 h-8 rounded-full"
-                    />
-                    <div className="flex flex-col">
-                        <span className="text-[#333333] text-[16px] font-medium">{username}</span>
-                        <span className="text-[#64748B] text-[14px]">{record.email}</span>
+            key: "userInfo",
+            render: (_: unknown, record: any) => {
+                const imageUrl = record.profile_image
+                    ? `https://6dxv0gtk-4444.inc1.devtunnels.ms/${record.profile_image.replace(/\\/g, '/')}`
+                    : null;
+
+                return (
+                    <div className="flex items-center gap-2">
+                        {imageUrl ? (
+                            <img
+                                src={imageUrl}
+                                alt="avatar"
+                                className="w-10 h-10 rounded-full object-cover"
+                            />
+                        ) : (
+                            <div className="w-10 h-10 rounded-full bg-[#DBEAFE] flex items-center justify-center text-[#2563EB] font-semibold text-base">
+                                {record.fullName?.charAt(0).toUpperCase() || "U"}
+                            </div>
+                        )}
+                        <div className="flex flex-col">
+                            <span className="text-[#333333] text-[16px] font-medium">{record.fullName}</span>
+                            <span className="text-[#64748B] text-[14px]">{record.email}</span>
+                        </div>
                     </div>
-                </div>
-            ),
+                );
+            },
         },
         {
             title: "Insured With",
-            dataIndex: "insuredWith",
-            key: "insuredWith",
-            render: (text: string) => <span className="text-[14px] text-[#1E293B]">{text}</span>,
+            dataIndex: "insurerName",
+            key: "insurerName",
+            render: (text: string) => <span className="text-[14px] text-[#1E293B]">{text || "N/A"}</span>,
         },
         {
             title: "Policy Type",
             dataIndex: "policyType",
             key: "policyType",
-            render: (text: string) => <span className="text-[14px] text-[#1E293B]">{text}</span>,
+            render: (text: string) => <span className="text-[14px] text-[#1E293B]">{text || "N/A"}</span>,
         },
         {
             title: "Submitted On",
@@ -173,25 +94,31 @@ export default function ManageClaims() {
             title: "Status",
             dataIndex: "status",
             key: "status",
-            render: (status: ClaimData["status"]) => (
-                <span
-                    className={`text-[14px] ${status === "Under Review"
-                        ? "text-[#F59E0B] "
-                        : status === "Report Ready"
-                            ? "text-[#22C55E]"
-                            : "text-[#F43F5E]"
-                        }`}
-                >
-                    {status}
-                </span>
-            ),
+            render: (status: string) => {
+                let color = "#F59E0B";
+                let label = "Under Review";
+
+                if (status === "REPORT_READY") {
+                    color = "#22C55E";
+                    label = "Report Ready";
+                } else if (status === "FAILED") {
+                    color = "#F43F5E";
+                    label = "Failed";
+                }
+
+                return (
+                    <span className="text-[14px]" style={{ color }}>
+                        {label}
+                    </span>
+                );
+            },
         },
         {
             title: "Actions",
             key: "actions",
-            render: () => (
+            render: (_: unknown, record: ClaimData) => (
                 <div className="flex items-center gap-2">
-                    <Link to={`/manage_claims/:id`}>
+                    <Link to={`/manage_claims/${record._id}`}>
                         <Button
                             className="p-0 border-none rounded-[4px] w-8 h-8 flex justify-center items-center"
                             style={{ padding: 0 }}
@@ -202,6 +129,7 @@ export default function ManageClaims() {
                     <Button
                         className="p-0 border border-[#EF4444]! rounded-[4px] w-8 h-8 flex justify-center items-center"
                         style={{ padding: 0 }}
+                        onClick={() => console.log("Delete", record._id)}
                     >
                         <Trash2 size={16} className="text-[#EF4444]" />
                     </Button>
@@ -210,18 +138,13 @@ export default function ManageClaims() {
         },
     ];
 
-    const filteredData = dataSource.filter((item) => {
-        const matchesStatus = statusFilter ? item.status === statusFilter : true;
-        return matchesStatus;
-    });
-
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex gap-2">
                     <Link to="/manage_users">
-                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
-                           </Link>
+                        <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                    </Link>
                     <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage Claims</h1>
                 </div>
                 <div className="flex gap-4">
@@ -231,21 +154,25 @@ export default function ManageClaims() {
                         onChange={(value) => setStatusFilter(value)}
                         className="w-[200px] h-10 custom-select"
                         suffixIcon={<ChevronDown className="text-[#3B82F6] w-4 h-4" />}
-                        defaultValue={null}
+                        defaultValue={undefined}
                     >
-                        <Select.Option value={null}>All</Select.Option>
-                        <Select.Option value="Under Review">Under Review</Select.Option>
-                        <Select.Option value="Report Ready">Report Ready</Select.Option>
-                        <Select.Option value="Failed">Failed</Select.Option>
+                        <Select.Option value="UNDER_REVIEW">Under Review</Select.Option>
+                        <Select.Option value="REPORT_READY">Report Ready</Select.Option>
+                        <Select.Option value="FAILED">Failed</Select.Option>
                     </Select>
                 </div>
             </div>
 
             <Table<ClaimData>
-                dataSource={filteredData}
+                loading={isLoading}
+                dataSource={claims}
                 columns={columns}
+                rowKey="_id"
                 pagination={{
-                    pageSize: 10,
+                    current: page,
+                    pageSize: limit,
+                    total: claimsData?.data?.meta?.total || 0,
+                    onChange: (p) => setPage(p),
                     position: ["bottomCenter"],
                     showSizeChanger: false,
                 }}

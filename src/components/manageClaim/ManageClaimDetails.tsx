@@ -1,12 +1,39 @@
 import documents from "../../../public/Frame (11).svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import SupportingReport from "./SupportingReport";
 import UpdateStatusModal from "./UpdateStatusModal";
+import { useGetSingleInsurerQuery } from "../../store/api/insurerApi";
 
 export default function ManageClaimDetails() {
 
-    const [claimStatus, setClaimStatus] = useState("Failed");
+    const { id } = useParams();
+
+    const { data: insurerData, isLoading, isError } = useGetSingleInsurerQuery(id as string)
+    const claim = insurerData?.data;
+
+    const [claimStatus, setClaimStatus] = useState("Under Review");
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    // Update claimStatus when data is loaded
+    useEffect(() => {
+        if (claim?.status) {
+            const statusMap: Record<string, string> = {
+                "UNDER_REVIEW": "Under Review",
+                "REPORT_READY": "Report Ready",
+                "FAILED": "Failed"
+            };
+            setClaimStatus(statusMap[claim.status] || "Under Review");
+        }
+    }, [claim?.status]);
+
+    if (isLoading) {
+        return <div className="p-10 flex justify-center items-center min-h-[90vh]">Loading...</div>;
+    }
+
+    if (isError) {
+        return <div className="p-10 flex justify-center items-center min-h-[90vh] text-red-500">Error loading claim details.</div>;
+    }
 
     const handleUpdateStatus = (status: string, reportFiles?: File[], failureNote?: string) => {
         setClaimStatus(status);
@@ -25,7 +52,7 @@ export default function ManageClaimDetails() {
             <div className="flex flex-col gap-4">
 
 
-                <SupportingReport claimStatus={claimStatus} />
+                <SupportingReport claim={claim} claimStatus={claimStatus} />
 
                 {/* supporting report */}
 
@@ -72,7 +99,7 @@ export default function ManageClaimDetails() {
                         <p className="text-[#EF4444]">Failure Note</p>
                         <div className="flex flex-col gap-4">
                             <p className="text-[#64748B]">
-                                The documents provided don't clearly relate to the claim decision.
+                                {claim?.failureNote || "No failure note provided."}
                             </p>
                         </div>
                     </div>
