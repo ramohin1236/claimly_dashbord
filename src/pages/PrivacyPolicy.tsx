@@ -77,8 +77,8 @@ export default function PrivacyPolicy() {
         />
       </div>
 
-      <div className="mt-5 flex justify-center">
-        <button className="bg-[#2563eb] cursor-pointer hover:bg-[#1d4ed8] py-3.5 px-4.5 rounded text-white!" onClick={onSubmit}>
+      <div className="mt-5 flex justify-start">
+        <button className="bg-[#2563eb] cursor-pointer hover:bg-[#1d4ed8] py-3.5 px-4.5 rounded-lg text-white!" onClick={onSubmit}>
           {isLoading ? 'Saving...' : 'Save & change'}
         </button>
       </div>

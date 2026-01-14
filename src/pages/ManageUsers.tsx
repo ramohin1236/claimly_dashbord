@@ -19,6 +19,7 @@ interface UserData {
     createdAt: string;
     isBlocked: boolean;
     image?: string;
+    user: Array<UserData>;
 }
 
 export default function ManageUsers() {
@@ -105,7 +106,7 @@ export default function ManageUsers() {
             dataIndex: "isBlocked",
             key: "isBlocked",
             render: (_: boolean | string, record: UserData) => {
-                const isUserBlocked = record.isBlocked === true || String(record.isBlocked) === "true";
+                const isUserBlocked = record?.user[0]?.isBlocked === true || String(record?.user[0]?.isBlocked) === "true";
                 return (
                     <span
                         className={`text-[14px] ${!isUserBlocked ? "text-[#22C55E]" : "text-[#EF4444]"
@@ -131,7 +132,7 @@ export default function ManageUsers() {
 
                     {!record.isBlocked ? (
                         <Button
-                            onClick={() => handleBlockToggle(record._id, !record.isBlocked)}
+                            onClick={() => handleBlockToggle(record?.user[0]?._id, !record?.user[0]?.isBlocked)}
                             className="p-0 border-[#EF4444] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#EF4444]/5"
                             style={{ padding: 0, borderColor: '#EF4444' }}
                         >
@@ -139,7 +140,7 @@ export default function ManageUsers() {
                         </Button>
                     ) : (
                         <Button
-                            onClick={() => handleBlockToggle(record._id, !record.isBlocked)}
+                            onClick={() => handleBlockToggle(record?.user[0]?._id, !record?.user[0]?.isBlocked)}
                             className="p-0 border-[#22C55E] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#22C55E]/5"
                             style={{ padding: 0, borderColor: '#22C55E' }}
                         >
@@ -159,9 +160,9 @@ export default function ManageUsers() {
                 {
                     pathName === "/manage_users" ? (
                         <div className="flex gap-2">
-                           <Link to="/">
-                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
-                           </Link>
+                            <Link to="/">
+                                <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                            </Link>
                             <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Manage Users</h1>
                         </div>
                     ) : (
