@@ -1,73 +1,68 @@
 import dashboardIcon from "../../public/Group (4).svg";
 import plusIcon from "../../public/Vector (5).svg";
 import editIcon from "../../public/Group (14).svg";
-import { Table, Button } from "antd";
+import { Table, Button, Popconfirm } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import AddGuideModal from "../components/guides/AddGuideModal";
 import EditGuideModal from "../components/guides/EditGuideModal";
 import { Link } from "react-router-dom";
+import {
+    useGetClaimlyGuidesQuery,
+    useUpdateClaimlyGuideMutation,
+    useDeleteClaimlyGuideMutation
+} from "../store/api/claimlyGuidesApi";
+import { toast } from "sonner";
 
 interface GuideData {
-    key: string;
+    _id: string;
     sl: number;
-    guidesTitle: string;
-    guidesDiscrimination: string;
+    title: string;
+    details: string;
 }
 
-const dataSource: GuideData[] = [
-    {
-        key: "1",
-        sl: 1,
-        guidesTitle: "How insurers assess motor accident claims How insurers assess motor accident claims How insurers assess motor accident claims",
-        guidesDiscrimination: "Non-disclosure refers to situations where an insurer believes relevant information was n...",
-    },
-    {
-        key: "2",
-        sl: 2,
-        guidesTitle: "Repair vs write-off: how insurers usually decide",
-        guidesDiscrimination: "Non-disclosure refers to situations where an insurer believes relevant information was n...",
-    },
-    {
-        key: "3",
-        sl: 3,
-        guidesTitle: "What Non-Disclosure is in insurance Claims",
-        guidesDiscrimination: "Non-disclosure refers to situations where an insurer believes relevant information was n...",
-    },
-    {
-        key: "4",
-        sl: 4,
-        guidesTitle: "How the insurance complaints process works...",
-        guidesDiscrimination: "Non-disclosure refers to situations where an insurer believes relevant information was n...",
-    },
-];
-
 export default function ClaimlyGuides() {
+    const { data: guidesData, isLoading } = useGetClaimlyGuidesQuery<any>();
+    const [updateGuide] = useUpdateClaimlyGuideMutation();
+    const [deleteGuide] = useDeleteClaimlyGuideMutation();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedGuide, setSelectedGuide] = useState<GuideData | null>(null);
-    const [guides, setGuides] = useState<GuideData[]>(dataSource);
 
-    const handleAddGuide = (title: string, discrimination: string) => {
-        const newGuide: GuideData = {
-            key: String(guides.length + 1),
-            sl: guides.length + 1,
-            guidesTitle: title,
-            guidesDiscrimination: discrimination,
-        };
-        setGuides([...guides, newGuide]);
-        console.log("New Guide Added:", newGuide);
+    const guides = guidesData?.data?.map((item: any, index: number) => ({
+        ...item,
+        key: item._id,
+        sl: index + 1
+    })) || [];
+    console.log("guidesssssss===>>",guides);
+    const handleEditGuide = async (id: string, title: string, details: string) => {
+        const toastId = toast.loading("Updating guide...");
+        try {
+            const res = await updateGuide({ id, data: { title, details } }).unwrap();
+            if (res.success) {
+                toast.success(res.message || "Guide updated successfully", { id: toastId });
+            } else {
+                toast.error(res.message || "Failed to update guide", { id: toastId });
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Failed to update guide", { id: toastId });
+        }
     };
 
-    const handleEditGuide = (id: string, title: string, discrimination: string) => {
-        const updatedGuides = guides.map((guide) =>
-            guide.key === id
-                ? { ...guide, guidesTitle: title, guidesDiscrimination: discrimination }
-                : guide
-        );
-        setGuides(updatedGuides);
-        console.log("Guide Updated:", { id, title, discrimination });
+    const handleDeleteGuide = async (id: string) => {
+        const toastId = toast.loading("Deleting guide...");
+        try {
+            const res = await deleteGuide(id).unwrap();
+            if (res.success) {
+                toast.success(res.message || "Guide deleted successfully", { id: toastId });
+            } else {
+                toast.error(res.message || "Failed to delete guide", { id: toastId });
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Failed to delete guide", { id: toastId });
+        }
     };
 
     const handleEditClick = (guide: GuideData) => {
@@ -85,8 +80,8 @@ export default function ClaimlyGuides() {
         },
         {
             title: "Guides Title",
-            dataIndex: "guidesTitle",
-            key: "guidesTitle",
+            dataIndex: "title",
+            key: "title",
             render: (text: string) => (
                 <span className="text-[#1E293B] text-[14px] block whitespace-normal">
                     {text}
@@ -95,8 +90,8 @@ export default function ClaimlyGuides() {
         },
         {
             title: "Guides Discrimination",
-            dataIndex: "guidesDiscrimination",
-            key: "guidesDiscrimination",
+            dataIndex: "details",
+            key: "details",
             render: (text: string) => (
                 <span className="text-[#1E293B] text-[14px] block whitespace-normal">
                     {text}
@@ -114,14 +109,22 @@ export default function ClaimlyGuides() {
                         className="p-0 border-[#64748B]! rounded-[4px] w-8 h-8 flex justify-center items-center"
                         style={{ padding: 0 }}
                     >
-                        <img src={editIcon} alt="" />
+                        <img src={editIcon} alt="edit" />
                     </Button>
-                    <Button
-                        className="p-0 B border border-[#EF4444]! rounded-[4px] w-8 h-8 flex justify-center items-center"
-                        style={{ padding: 0 }}
+                    <Popconfirm
+                        title="Delete the guide"
+                        description="Are you sure to delete this guide?"
+                        onConfirm={() => handleDeleteGuide(record._id)}
+                        okText="Yes"
+                        cancelText="No"
                     >
-                        <Trash2 size={16} className="text-[#EF4444]" />
-                    </Button>
+                        <Button
+                            className="p-0 border border-[#EF4444]! rounded-[4px] w-8 h-8 flex justify-center items-center"
+                            style={{ padding: 0 }}
+                        >
+                            <Trash2 size={16} className="text-[#EF4444]" />
+                        </Button>
+                    </Popconfirm>
                 </div>
             ),
         },
@@ -131,9 +134,9 @@ export default function ClaimlyGuides() {
         <div className="space-y-6">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex gap-2">
-                   <Link to="/manage_claims">
-                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
-                           </Link>
+                    <Link to="/manage_claims">
+                        <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+                    </Link>
                     <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Claimly Guides</h1>
                 </div>
                 <button
@@ -146,6 +149,7 @@ export default function ClaimlyGuides() {
             </div>
 
             <Table<GuideData>
+                loading={isLoading}
                 dataSource={guides}
                 columns={columns}
                 pagination={{
@@ -172,7 +176,7 @@ export default function ClaimlyGuides() {
             <AddGuideModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onSave={handleAddGuide}
+                onSave={() => { }}
             />
 
             {/* Edit Guide Modal */}

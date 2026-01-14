@@ -4,11 +4,11 @@ import { X } from "lucide-react";
 interface EditGuideModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (id: string, title: string, discrimination: string) => void;
+    onSave: (id: string, title: string, details: string) => void;
     guide: {
-        key: string;
-        guidesTitle: string;
-        guidesDiscrimination: string;
+        _id: string;
+        title: string;
+        details: string;
     } | null;
 }
 
@@ -26,8 +26,8 @@ export default function EditGuideModal({
         if (isOpen) {
             setIsAnimating(true);
             if (guide) {
-                setGuidesTitle(guide.guidesTitle);
-                setGuidesDiscrimination(guide.guidesDiscrimination);
+                setGuidesTitle(guide.title);
+                setGuidesDiscrimination(guide.details);
             }
         }
     }, [isOpen, guide]);
@@ -43,7 +43,7 @@ export default function EditGuideModal({
             alert("Please enter guides discrimination");
             return;
         }
-        onSave(guide.key, guidesTitle, guidesDiscrimination);
+        onSave(guide._id, guidesTitle, guidesDiscrimination);
         handleClose();
     };
 

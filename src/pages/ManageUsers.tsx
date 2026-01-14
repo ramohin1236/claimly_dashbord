@@ -26,12 +26,12 @@ export default function ManageUsers() {
     const navigate = useNavigate();
     const [searchText, setSearchText] = useState("");
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
-    const [page, setPage] = useState(1);
-    const limit = 10;
-    const [toggleBlockUser] = useToggleBlockUserMutation();
-
     const path = useLocation();
     const pathName = path.pathname;
+
+    const [page, setPage] = useState(1);
+    const limit = pathName === "/manage_users" ? 10 : 3;
+    const [toggleBlockUser] = useToggleBlockUserMutation();
 
     let isBlocked = undefined;
     if (statusFilter === "Inactive") isBlocked = true;
