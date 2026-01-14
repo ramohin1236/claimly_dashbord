@@ -1,7 +1,7 @@
 import JoditEditor from "jodit-react";
 import dashboardIcon from "../../public/Group (4).svg";
-import { useRef, useState } from "react";
-import { useCreateTermsConditionsMutation } from "../store/api/webApi";
+import { useRef, useState, useEffect } from "react";
+import { useCreateTermsConditionsMutation, useGetTermsConditionsQuery } from "../store/api/webApi";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 
@@ -10,15 +10,22 @@ export default function TermsConditions() {
 
 
   const [createTermsConditions, { isLoading }] = useCreateTermsConditionsMutation()
+  const { data } = useGetTermsConditionsQuery()
+
+  useEffect(() => {
+    if (data?.data?.description) {
+      setContent(data.data.description);
+    }
+  }, [data]);
 
   const editor = useRef(null);
   const [content, setContent] = useState("");
 
   const onSubmit = async () => {
     try {
-      const response = await createTermsConditions({ content });
-      if (response.data.success) {
-        toast.success(response.data.message)
+      const response = await createTermsConditions({ description: content }).unwrap();
+      if (response.success) {
+        toast.success(response.message)
       }
       console.log(response)
     } catch (error: any) {
@@ -50,8 +57,8 @@ export default function TermsConditions() {
       <div className="flex justify-between mb-10">
         <div className="flex gap-2">
           <Link to="/manage_faq">
-                             <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
-                           </Link>
+            <img src={dashboardIcon} alt="dashboard" className="w-4 h-4" />
+          </Link>
           <h1 className="text-sm text-[#1E293B]/80 m-0 leading-none">Terms & Conditions</h1>
         </div>
 

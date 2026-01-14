@@ -8,6 +8,14 @@ export const webApi = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
+            invalidatesTags: ['TermsConditions']
+        }),
+        getTermsConditions: builder.query<any, void>({
+            query: () => ({
+                url: '/manage-Web/get-terms-conditions',
+                method: 'GET'
+            }),
+            providesTags: ['TermsConditions']
         }),
         createPrivacyPolicy: builder.mutation({
             query: (data) => ({
@@ -15,6 +23,14 @@ export const webApi = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
+            invalidatesTags: ['PrivacyPolicy']
+        }),
+        getPrivacyPolicy: builder.query<any, void>({
+            query: () => ({
+                url: '/manage-Web/get-privacy-policy',
+                method: 'GET'
+            }),
+            providesTags: ['PrivacyPolicy']
         }),
         createFAQ: builder.mutation({
             query: (data) => ({
@@ -39,5 +55,7 @@ export const {
     useCreateTermsConditionsMutation,
     useCreatePrivacyPolicyMutation,
     useCreateFAQMutation,
-    useGetFaqQuery
+    useGetFaqQuery,
+    useGetPrivacyPolicyQuery,
+    useGetTermsConditionsQuery
 } = webApi;
