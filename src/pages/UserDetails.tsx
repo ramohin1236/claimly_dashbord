@@ -71,11 +71,17 @@ export default function UserDetails() {
                 <div className="flex mb-12 ml-4">
                     {user?.data?.user?.profile_image ? (
                         <div className="w-24 h-24 rounded-full border border-[#BFDBFE]/50 p-0.5 shadow-sm">
-                            <img
-                                src={`http://192.168.10.160:5000/${user.data.user.profile_image.replace(/\\/g, '/')}`}
-                                alt="Profile"
-                                className="w-full h-full object-cover rounded-full"
-                            />
+                            {(() => {
+                                const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://claimly-insurance-server.vercel.app/api/v1';
+                                const domain = new URL(apiBaseUrl).origin;
+                                return (
+                                    <img
+                                        src={`${domain}/${user.data.user.profile_image.replace(/\\/g, '/')}`}
+                                        alt="Profile"
+                                        className="w-full h-full object-cover rounded-full"
+                                    />
+                                );
+                            })()}
                         </div>
                     ) : (
                         <div className="w-24 h-24 rounded-full bg-[#DBEAFE] border border-[#BFDBFE] flex items-center justify-center text-[#2563EB] text-3xl font-bold shadow-sm">

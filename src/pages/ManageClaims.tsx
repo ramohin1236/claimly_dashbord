@@ -32,7 +32,7 @@ export default function ManageClaims() {
         status: statusFilter,
     });
 
-     console.log("first", claimsData )
+    console.log("first", claimsData)
     const claims = claimsData?.data?.data?.map((item: any) => ({
         ...item,
         key: item._id,
@@ -47,8 +47,11 @@ export default function ManageClaims() {
             title: "User Info",
             key: "userInfo",
             render: (_: unknown, record: any) => {
+                const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://6dxv0gtk-4444.inc1.devtunnels.ms/api/v1';
+                const domain = new URL(apiBaseUrl).origin;
+
                 const imageUrl = record.profile_image
-                    ? `https://6dxv0gtk-4444.inc1.devtunnels.ms/${record.profile_image.replace(/\\/g, '/')}`
+                    ? `${domain}/${record.profile_image.replace(/\\/g, '/')}`
                     : null;
 
                 return (

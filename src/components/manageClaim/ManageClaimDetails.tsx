@@ -1,5 +1,5 @@
-import documents from "../../../public/Frame (11).svg";
 import { useState, useEffect } from "react";
+import { FileText, Image as ImageIcon, Download } from "lucide-react";
 import { useParams } from "react-router-dom";
 import SupportingReport from "./SupportingReport";
 import UpdateStatusModal from "./UpdateStatusModal";
@@ -11,6 +11,8 @@ export default function ManageClaimDetails() {
 
     const { data: insurerData, isLoading, isError } = useGetSingleInsurerQuery(id as string)
     const claim = insurerData?.data;
+    console.log("document", claim?.supporting_Documents)
+    const supportingDocuments = claim?.supporting_Documents;
 
     const [claimStatus, setClaimStatus] = useState("Under Review");
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,6 +49,36 @@ export default function ManageClaimDetails() {
         // Here you can add API call to update the status in backend
     };
 
+    const handleDownload = async (fileUrl: string, fileName: string) => {
+        try {
+            // Get the base API URL and extract the domain
+            const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://6dxv0gtk-4444.inc1.devtunnels.ms/api/v1';
+            const domain = new URL(apiBaseUrl).origin;
+
+            // If the URL is relative, prepend the domain
+            const fullUrl = fileUrl.startsWith('http')
+                ? fileUrl
+                : `${domain}/${fileUrl.replace(/\\/g, '/')}`;
+
+            const response = await fetch(fullUrl);
+            console.log("Response:", response);
+            // if (!response.ok) throw new Error('Network response was not ok');
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode?.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Download failed:", error);
+            alert("Failed to download file. Please check if the file exists on the server.");
+        }
+    };
+
     return (
         <div className="p-10 min-h-[90vh] rounded-3xl">
             <div className="flex flex-col gap-4">
@@ -60,20 +92,31 @@ export default function ManageClaimDetails() {
                     <p>Supporting Documents</p>
                     <div className="flex flex-col gap-4">
                         {/* first */}
-                        <div className="bg-[#DBEAFE] flex items-center gap-2 py-3 px-4 rounded-lg">
-                            <div> <img src={documents} alt="" /> </div>
-                            <div> <p>Documents 01.pdf</p> </div>
-                        </div>
-                        {/* first */}
-                        <div className="bg-[#DBEAFE] flex items-center gap-2 py-3 px-4 rounded-lg">
-                            <div> <img src={documents} alt="" /> </div>
-                            <div> <p>Documents 01.pdf</p> </div>
-                        </div>
-                        {/* first */}
-                        <div className="bg-[#DBEAFE] flex items-center gap-2 py-3 px-4 rounded-lg">
-                            <div> <img src={documents} alt="" /> </div>
-                            <div> <p>Documents 01.pdf</p> </div>
-                        </div>
+                        {
+                            supportingDocuments?.map((document: string, index: number) => {
+                                const isImage = document.toLowerCase().match(/\.(jpg|jpeg|png|gif|svg|webp)$/);
+                                const fileName = document.split(/[\\/]/).pop() || `Document ${index + 1}`;
+                                return (
+                                    <div key={index} className="bg-[#DBEAFE] flex items-center justify-between py-3 px-4 rounded-lg">
+                                        <div className="flex items-center gap-2">
+                                            <div className="text-[#2563EB]">
+                                                {isImage ? <ImageIcon size={20} /> : <FileText size={20} />}
+                                            </div>
+                                            <div>
+                                                <p className="text-[#1E293B] text-sm">{fileName}</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => handleDownload(document, fileName)}
+                                            className="text-[#2563EB] cursor-pointer hover:text-[#1d4ed8] transition-colors"
+                                            title="Download"
+                                        >
+                                            <Download size={18} />
+                                        </button>
+                                    </div>
+                                );
+                            })
+                        }
 
                     </div>
                 </div>
@@ -82,14 +125,29 @@ export default function ManageClaimDetails() {
                     <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4">
                         <p>Claim Evaluation Report</p>
                         <div className="flex flex-col gap-4">
-                            <div className="bg-[#DBEAFE] flex items-center gap-2 py-3 px-4 rounded-lg">
-                                <div>
-                                    <img src={documents} alt="" />
-                                </div>
-                                <div>
-                                    <p>Documents 01.pdf</p>
-                                </div>
-                            </div>
+                            {claim?.evaluation_Report?.map((report: string, index: number) => {
+                                const isImage = report.toLowerCase().match(/\.(jpg|jpeg|png|gif|svg|webp)$/);
+                                const fileName = report.split(/[\\/]/).pop() || `Report ${index + 1}`;
+                                return (
+                                    <div key={index} className="bg-[#DBEAFE] flex items-center justify-between py-3 px-4 rounded-lg">
+                                        <div className="flex items-center gap-2">
+                                            <div className="text-[#2563EB]">
+                                                {isImage ? <ImageIcon size={20} /> : <FileText size={20} />}
+                                            </div>
+                                            <div>
+                                                <p className="text-[#1E293B] text-sm">{fileName}</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => handleDownload(report, fileName)}
+                                            className="text-[#2563EB] cursor-pointer hover:text-[#1d4ed8] transition-colors"
+                                            title="Download"
+                                        >
+                                            <Download size={18} />
+                                        </button>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 )}

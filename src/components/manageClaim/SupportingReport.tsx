@@ -3,10 +3,13 @@ import dayjs from "dayjs";
 
 export default function SupportingReport({ claim, claimStatus }: { claim: any, claimStatus: string }) {
     const user = claim?.normalUserId;
-    console.log("single claim",claim)
+    console.log("single claim", claim)
+
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://6dxv0gtk-4444.inc1.devtunnels.ms/api/v1';
+    const domain = new URL(apiBaseUrl).origin;
 
     const imageUrl = user?.profile_image
-        ? `https://6dxv0gtk-4444.inc1.devtunnels.ms/${user.profile_image.replace(/\\/g, '/')}`
+        ? `${domain}/${user.profile_image.replace(/\\/g, '/')}`
         : null;
 
     return (
