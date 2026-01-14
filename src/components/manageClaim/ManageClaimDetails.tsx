@@ -6,6 +6,7 @@ import UpdateStatusModal from "./UpdateStatusModal";
 import { useGetSingleInsurerQuery } from "../../store/api/insurerApi";
 
 export default function ManageClaimDetails() {
+    const baseURl = "https://6dxv0gtk-4444.inc1.devtunnels.ms"
 
     const { id } = useParams();
 
@@ -117,6 +118,8 @@ export default function ManageClaimDetails() {
                                 );
                             })
                         }
+
+                        <p><img src={`${baseURl}/${claim?.supporting_Documents[0]}`} alt="adsf" /></p>
 
                     </div>
                 </div>
