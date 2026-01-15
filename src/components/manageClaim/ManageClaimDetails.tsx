@@ -6,8 +6,9 @@ import UpdateStatusModal from "./UpdateStatusModal";
 import { useGetSingleInsurerQuery, useUpdateInsurerStatusMutation } from "../../store/api/insurerApi";
 import { toast } from "sonner";
 
+
 export default function ManageClaimDetails() {
-    const baseURl = "https://claimly-insurance-server.vercel.app"
+    const baseURl = "https://6dxv0gtk-4444.inc1.devtunnels.ms"
 
     const { id } = useParams();
 
@@ -81,18 +82,18 @@ export default function ManageClaimDetails() {
 
     const handleDownload = async (fileUrl: string, fileName: string) => {
         try {
-            // Get the base API URL and extract the domain
-            const apiBaseUrl = 'https://claimly-insurance-server.vercel.app/api/v1';
+
+            const apiBaseUrl = 'https://6dxv0gtk-4444.inc1.devtunnels.ms/api/v1';
             const domain = new URL(apiBaseUrl).origin;
 
-            // If the URL is relative, prepend the domain
+
             const fullUrl = fileUrl.startsWith('http')
                 ? fileUrl
                 : `${domain}/${fileUrl.replace(/\\/g, '/')}`;
 
             const response = await fetch(fullUrl);
             console.log("Response:", response);
-            // if (!response.ok) throw new Error('Network response was not ok');
+            if (!response.ok) throw new Error('Network response was not ok');
 
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
@@ -109,6 +110,31 @@ export default function ManageClaimDetails() {
         }
     };
 
+
+    // const handleDownload = (fileUrl: string, fileName: string) => {
+    //     if (!fileUrl) {
+    //         alert("File not found");
+    //         return;
+    //     }
+
+    //     let finalUrl = fileUrl;
+
+    //     // relative path হলে
+    //     if (!fileUrl.startsWith("http")) {
+    //         finalUrl = `https://6dxv0gtk-4444.inc1.devtunnels.ms/${fileUrl.replace(/\\/g, "/")}`;
+    //     }
+
+    //     const link = document.createElement("a");
+    //     link.href = finalUrl;
+    //     link.download = fileName || "download";
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    // };
+
+
+
+
     return (
         <div className="p-10 min-h-[90vh] rounded-3xl">
             <div className="flex flex-col gap-4">
@@ -120,12 +146,19 @@ export default function ManageClaimDetails() {
 
                 <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4">
                     <p>Supporting Documents</p>
+
+                    {/* <div className="">
+                        <img className="w-48 h-auto" src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D" />
+                    </div> */}
+
+
                     <div className="flex flex-col gap-4">
                         {/* first */}
                         {
                             supportingDocuments?.map((document: string, index: number) => {
                                 const isImage = document.toLowerCase().match(/\.(jpg|jpeg|png|gif|svg|webp)$/);
                                 const fileName = document.split(/[\\/]/).pop() || `Document ${index + 1}`;
+                                // const fileName = pdf;
                                 return (
                                     <div key={index} className="bg-[#DBEAFE] flex items-center justify-between py-3 px-4 rounded-lg">
                                         <div className="flex items-center gap-2">
@@ -136,7 +169,10 @@ export default function ManageClaimDetails() {
                                                 <p className="text-[#1E293B] text-sm">{fileName}</p>
                                             </div>
                                         </div>
+
+
                                         <button
+
                                             onClick={() => handleDownload(document, fileName)}
                                             className="text-[#2563EB] cursor-pointer hover:text-[#1d4ed8] transition-colors"
                                             title="Download"
