@@ -184,7 +184,7 @@ export default function ManageClaimDetails() {
                             })
                         }
 
-                        <p><img src={`${baseURl}/${claim?.supporting_Documents[0]}`} alt="adsf" /></p>
+                        {/* <p><img src={`${baseURl}/${claim?.supporting_Documents[0]}`} alt="adsf" /></p> */}
 
                     </div>
                 </div>
