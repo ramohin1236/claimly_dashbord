@@ -23,7 +23,15 @@ export const insurerApi = apiSlice.injectEndpoints({
                 url: `/insurer/single-insurer/${id}`,
                 method: 'GET',
             }),
-           providesTags: ['Claim'],
+            providesTags: ['Claim'],
+        }),
+        updateInsurerStatus: builder.mutation({
+            query: ({ id, body }) => ({
+                url: `/insurer/update-insurer/${id}`,
+                method: 'PATCH',
+                body: body,
+            }),
+            invalidatesTags: ['Claim'],
         }),
     }),
 });
@@ -31,4 +39,5 @@ export const insurerApi = apiSlice.injectEndpoints({
 export const {
     useGetInsurerClaimsQuery,
     useGetSingleInsurerQuery,
+    useUpdateInsurerStatusMutation,
 } = insurerApi;

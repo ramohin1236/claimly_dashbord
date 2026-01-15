@@ -3,10 +3,11 @@ import { FileText, Image as ImageIcon, Download } from "lucide-react";
 import { useParams } from "react-router-dom";
 import SupportingReport from "./SupportingReport";
 import UpdateStatusModal from "./UpdateStatusModal";
-import { useGetSingleInsurerQuery } from "../../store/api/insurerApi";
+import { useGetSingleInsurerQuery, useUpdateInsurerStatusMutation } from "../../store/api/insurerApi";
+import { toast } from "sonner";
 
 export default function ManageClaimDetails() {
-    const baseURl = "https://6dxv0gtk-4444.inc1.devtunnels.ms"
+    const baseURl = "https://claimly-insurance-server.vercel.app"
 
     const { id } = useParams();
 
@@ -17,6 +18,7 @@ export default function ManageClaimDetails() {
 
     const [claimStatus, setClaimStatus] = useState("Under Review");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [updateStatus] = useUpdateInsurerStatusMutation();
 
     // Update claimStatus when data is loaded
     useEffect(() => {
@@ -38,22 +40,49 @@ export default function ManageClaimDetails() {
         return <div className="p-10 flex justify-center items-center min-h-[90vh] text-red-500">Error loading claim details.</div>;
     }
 
-    const handleUpdateStatus = (status: string, reportFiles?: File[], failureNote?: string) => {
-        setClaimStatus(status);
-        console.log("Updated Status:", status);
-        if (reportFiles && reportFiles.length > 0) {
-            console.log("Report Files:", reportFiles);
+
+    const handleUpdateStatus = async (status: string, reportFiles?: File[], failureNote?: string) => {
+        const toastId = toast.loading("Updating status...");
+        try {
+            const formData = new FormData();
+
+            // Map labels to backend status values
+            const statusMap: Record<string, string> = {
+                "Under Review": "UNDER_REVIEW",
+                "Report Ready": "REPORT_READY",
+                "Failed": "FAILED"
+            };
+
+            const data = {
+                status: statusMap[status] || status,
+                failureNote: failureNote || ""
+            };
+
+            formData.append("data", JSON.stringify(data));
+
+            if (reportFiles && reportFiles.length > 0) {
+                // Assuming single file for report_Document as per screenshot
+                formData.append("report_Document", reportFiles[0]);
+            }
+
+            const res = await updateStatus({ id: id as string, body: formData }).unwrap();
+
+            if (res.success) {
+                toast.success(res.message || "Status updated successfully", { id: toastId });
+                setIsModalOpen(false);
+            } else {
+                toast.error(res.message || "Failed to update status", { id: toastId });
+            }
+        } catch (error: any) {
+            console.error("Update failed:", error);
+            toast.error(error?.data?.message || "An error occurred while updating status", { id: toastId });
         }
-        if (failureNote) {
-            console.log("Failure Note:", failureNote);
-        }
-        // Here you can add API call to update the status in backend
     };
 
     const handleDownload = async (fileUrl: string, fileName: string) => {
         try {
             // Get the base API URL and extract the domain
-            const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://6dxv0gtk-4444.inc1.devtunnels.ms/api/v1';
+            const apiBaseUrl = 'https://claimly-insurance-server.vercel.app/api/v1';
             const domain = new URL(apiBaseUrl).origin;
 
             // If the URL is relative, prepend the domain

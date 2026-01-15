@@ -47,14 +47,6 @@ export default function UpdateStatusModal({
     };
 
     const handleSaveUpdate = () => {
-        if (selectedStatus === "Report Ready" && reportFiles.length === 0) {
-            alert("Please upload at least one report document");
-            return;
-        }
-        if (selectedStatus === "Failed" && !failureNote.trim()) {
-            alert("Please provide a failure note");
-            return;
-        }
         onUpdateStatus(selectedStatus, reportFiles, failureNote);
         onClose();
     };
