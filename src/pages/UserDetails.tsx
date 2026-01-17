@@ -72,7 +72,7 @@ export default function UserDetails() {
                     {user?.data?.user?.profile_image ? (
                         <div className="w-24 h-24 rounded-full border border-[#BFDBFE]/50 p-0.5 shadow-sm">
                             {(() => {
-                                const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://claimly-insurance-server.vercel.app/api/v1';
+                                const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://claimly-insurance-server-eight.vercel.app/api/v1';
                                 const domain = new URL(apiBaseUrl).origin;
                                 return (
                                     <img

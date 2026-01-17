@@ -39,7 +39,7 @@ export default function ManageProfile() {
                                         src={
                                             data.data.profileImage.startsWith("http")
                                                 ? data.data.profileImage
-                                                : `https://claimly-insurance-server.vercel.app/${data.data.profileImage}`
+                                                : `https://claimly-insurance-server-eight.vercel.app/${data.data.profileImage}`
                                         }
                                         alt="user"
                                         className="object-cover w-full h-full rounded-full p-1"

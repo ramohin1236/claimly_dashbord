@@ -63,7 +63,7 @@ export default function ManageClaims() {
             title: "User Info",
             key: "userInfo",
             render: (_: unknown, record: any) => {
-                const apiBaseUrl = 'https://claimly-insurance-server.vercel.app/api/v1';
+                const apiBaseUrl = 'https://claimly-insurance-server-eight.vercel.app/api/v1';
                 const domain = new URL(apiBaseUrl).origin;
 
                 const imageUrl = record.profile_image

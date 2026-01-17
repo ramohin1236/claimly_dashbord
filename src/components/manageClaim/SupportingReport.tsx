@@ -5,7 +5,7 @@ export default function SupportingReport({ claim, claimStatus }: { claim: any, c
     const user = claim?.normalUserId;
     console.log("single claim", claim)
 
-    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://claimly-insurance-server.vercel.app/api/v1';
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://claimly-insurance-server-eight.vercel.app/api/v1';
     const domain = new URL(apiBaseUrl).origin;
 
     const imageUrl = user?.profile_image

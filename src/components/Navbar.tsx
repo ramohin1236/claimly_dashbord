@@ -38,7 +38,7 @@ export default function Navbar({ onToggleSidebar }: NavbarProps) {
                         src={data?.data?.profileImage
                             ? (data.data.profileImage.startsWith('http')
                                 ? data.data.profileImage
-                                : `https://claimly-insurance-server.vercel.app/${data.data.profileImage}`)
+                                : `https://claimly-insurance-server-eight.vercel.app/${data.data.profileImage}`)
                             : userIcon}
                         alt="profile"
                         className="w-5 h-5 rounded-full object-cover"

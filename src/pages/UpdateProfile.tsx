@@ -26,7 +26,7 @@ export default function UpdateProfile() {
                 // Check if it's already a full URL or needs a base path
                 setProfileImage(data.data.profile_image.startsWith('http')
                     ? data.data.profile_image
-                    : `https://claimly-insurance-server.vercel.app/${data.data.profile_image}`);
+                    : `https://claimly-insurance-server-eight.vercel.app/${data.data.profile_image}`);
             }
         }
     }, [data]);

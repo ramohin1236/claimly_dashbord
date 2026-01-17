@@ -83,7 +83,7 @@ export default function ManageClaimDetails() {
     const handleDownload = async (fileUrl: string, fileName: string) => {
         try {
 
-            const apiBaseUrl = 'https://claimly-insurance-server.vercel.app/api/v1';
+            const apiBaseUrl = 'https://claimly-insurance-server-eight.vercel.app/api/v1';
             const domain = new URL(apiBaseUrl).origin;
 
 
