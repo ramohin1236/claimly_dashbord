@@ -13,5 +13,5 @@ export const apiSlice = createApi({
         },
     }),
     endpoints: () => ({}),
-    tagTypes: ['User', 'FAQ', 'PrivacyPolicy', 'TermsConditions', 'ClaimlyGuide', 'Claim']
+    tagTypes: ['User', 'FAQ', 'PrivacyPolicy', 'TermsConditions', 'ClaimlyGuide', 'Claim', 'MetaData']
 });

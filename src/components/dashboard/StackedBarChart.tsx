@@ -121,7 +121,7 @@ const data2025 = [
     pv: 6300,
     amt: 2100,
   },
-   {
+  {
     name: 'Aug',
     uv: 3490,
     pv: 4300,
@@ -161,18 +161,23 @@ const StackedBarChart = () => {
   return (
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
       {/* Header with Year Dropdown */}
-      <div className="flex justify-end mb-4">
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          className="border border-slate-200 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-700 font-medium"
-        >
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
-        </select>
+      <div className='flex justify-between items-center'>
+        <div>
+          <p className='font-medium'>Users Join growth</p>
+        </div>
+        <div className="flex justify-end mb-4">
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            className="border border-slate-200 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-700 font-medium"
+          >
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+          </select>
+        </div>
       </div>
 
-      <div style={{ width: '100%', height: '70vh', maxHeight: '700px' }}>
+      <div style={{ width: '100%', height: '50vh', maxHeight: '700px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={data}
@@ -191,14 +196,14 @@ const StackedBarChart = () => {
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
             <XAxis dataKey="name" />
-            <YAxis width={100} />
+            <YAxis  />
             <Tooltip cursor={{ fill: 'transparent' }} />
             <Legend />
             <Bar dataKey="pv" fill="url(#barGradient)" radius={[4, 4, 0, 0]} />
             <RechartsDevtools />
           </BarChart>
 
-       
+
         </ResponsiveContainer>
       </div>
     </div>

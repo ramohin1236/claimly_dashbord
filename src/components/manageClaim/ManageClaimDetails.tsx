@@ -111,27 +111,6 @@ export default function ManageClaimDetails() {
     };
 
 
-    // const handleDownload = (fileUrl: string, fileName: string) => {
-    //     if (!fileUrl) {
-    //         alert("File not found");
-    //         return;
-    //     }
-
-    //     let finalUrl = fileUrl;
-
-    //     // relative path হলে
-    //     if (!fileUrl.startsWith("http")) {
-    //         finalUrl = `https://claimly-insurance-server.vercel.app/${fileUrl.replace(/\\/g, "/")}`;
-    //     }
-
-    //     const link = document.createElement("a");
-    //     link.href = finalUrl;
-    //     link.download = fileName || "download";
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    // };
-
 
 
 

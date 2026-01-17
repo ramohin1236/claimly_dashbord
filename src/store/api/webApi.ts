@@ -17,6 +17,13 @@ export const webApi = apiSlice.injectEndpoints({
             }),
             providesTags: ['TermsConditions']
         }),
+        getMetaData: builder.query<any, void>({
+            query: () => ({
+                url: '/meta/meta-data',
+                method: 'GET'
+            }),
+            providesTags: ['MetaData']
+        }),
         createPrivacyPolicy: builder.mutation({
             query: (data) => ({
                 url: '/manage-Web/add-privacy-policy',
@@ -47,6 +54,21 @@ export const webApi = apiSlice.injectEndpoints({
             }),
             providesTags: [{ type: 'FAQ', id: 'LIST' }]
         }),
+        deleteFaq: builder.mutation({
+            query: (id) => ({
+                url: `/manage-Web/delete-faq/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['FAQ']
+        }),
+        updateFaq: builder.mutation({
+            query: ({ id, ...data }) => ({
+                url: `/manage-Web/edit-faq/${id}`,
+                method: 'PATCH',
+                body: data,
+            }),
+            invalidatesTags: [{ type: 'FAQ', id: 'LIST' }]
+        }),
 
     }),
 });
@@ -57,5 +79,8 @@ export const {
     useCreateFAQMutation,
     useGetFaqQuery,
     useGetPrivacyPolicyQuery,
-    useGetTermsConditionsQuery
+    useGetTermsConditionsQuery,
+    useDeleteFaqMutation,
+    useUpdateFaqMutation,
+    useGetMetaDataQuery
 } = webApi;

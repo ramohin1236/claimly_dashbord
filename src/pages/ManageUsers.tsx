@@ -30,7 +30,7 @@ export default function ManageUsers() {
     const pathName = path.pathname;
 
     const [page, setPage] = useState(1);
-    const limit = pathName === "/manage_users" ? 10 : 3;
+    const limit = pathName === "/manage_users" ? 15 : 3;
     const [toggleBlockUser] = useToggleBlockUserMutation();
 
     let isBlocked = undefined;
@@ -162,7 +162,7 @@ export default function ManageUsers() {
     const displayData = data?.data?.data || [];
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-12 mt-12">
             <div className="flex justify-between items-center mb-6">
                 {
                     pathName === "/manage_users" ? (

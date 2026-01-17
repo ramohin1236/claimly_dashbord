@@ -2,13 +2,14 @@ import dashboardIcon from "../../public/Group (4).svg";
 import faqrightIcon from "../../public/Frame (7).svg";
 import addFaqIcon from "../../public/Group (6).svg";
 import faqBubbleIcon from "../../public/manageFaq.svg";
-import { Popover } from "antd";
+import { Popconfirm, Popover } from "antd";
 import { useState } from "react";
 import AddFaqModal from "../components/faq/AddFaqModal";
 import UpdateFaqModal from "../components/faq/UpdateFaqModal";
 import { PencilLine, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useGetFaqQuery } from "../store/api/webApi";
+import { useDeleteFaqMutation, useGetFaqQuery, useUpdateFaqMutation } from "../store/api/webApi";
+import { toast } from "sonner";
 
 
 
@@ -18,6 +19,8 @@ export default function ManageFaq() {
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
     const [selectedFaq, setSelectedFaq] = useState<{ id: number; question: string; answer: string } | null>(null);
     const { data } = useGetFaqQuery()
+    const [deleteFaq] = useDeleteFaqMutation();
+    const [updateFaq] = useUpdateFaqMutation();
     const faqData = data?.data
     console.log("faqData", faqData)
     const handleOpenModal = () => setIsModalOpen(true);
@@ -32,17 +35,40 @@ export default function ManageFaq() {
         setSelectedFaq(null);
     };
 
-
-    const handleUpdateFaq = (values: { question: string; answer: string }) => {
-        console.log("Updating FAQ:", selectedFaq?.id, values);
-        setIsUpdateModalOpen(false);
-        setSelectedFaq(null);
+    const handleDeleteFaq = async (id: string) => {
+        const toastId = toast.loading("Deleting faq...");
+        try {
+            const res = await deleteFaq(id).unwrap();
+            if (res.success) {
+                toast.success(res.message || "Faq deleted successfully", { id: toastId });
+            } else {
+                toast.error(res.message || "Failed to delete faq", { id: toastId });
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Failed to delete faq", { id: toastId });
+        }
     };
 
-    const actionContent = (faq: { id: number; question: string; answer: string }) => (
+
+    const handleUpdateFaq = async (values: { question: string; answer: string }) => {
+        const toastId = toast.loading("Updating faq...");
+        try {
+            const res = await updateFaq({ id: selectedFaq?.id, ...values }).unwrap();
+            if (res.success) {
+                toast.success(res.message || "Faq updated successfully", { id: toastId });
+                handleCloseUpdateModal();
+            } else {
+                toast.error(res.message || "Failed to update faq", { id: toastId });
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Failed to update faq", { id: toastId });
+        }
+    };
+
+    const actionContent = (faq: { id: string; question: string; answer: string }) => (
         <div className="flex flex-col w-[140px] p-1 bg-white">
             <button
-                onClick={() => handleOpenUpdateModal(faq)}
+                onClick={() => handleOpenUpdateModal(faq as any)}
                 className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-lg transition-colors group"
             >
                 <div className="w-5 h-5 flex items-center justify-center">
@@ -50,12 +76,20 @@ export default function ManageFaq() {
                 </div>
                 <span className="text-sm font-medium text-[#475467] group-hover:text-[#1E293B]">Update</span>
             </button>
-            <button className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-lg transition-colors group">
-                <div className="w-5 h-5 flex items-center justify-center">
-                    <Trash2 className="w-4 h-4 text-[#475467] group-hover:text-[#EF4444]" />
-                </div>
-                <span className="text-sm font-medium text-[#475467] group-hover:text-[#EF4444]">Delete</span>
-            </button>
+            <Popconfirm
+                title="Delete the faq"
+                description="Are you sure to delete this faq?"
+                onConfirm={() => handleDeleteFaq(faq.id)}
+                okText="Yes"
+                cancelText="No"
+            >
+                <button className="flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 rounded-lg transition-colors group">
+                    <div className="w-5 h-5 flex items-center justify-center">
+                        <Trash2 className="w-4 h-4 text-[#475467] group-hover:text-[#EF4444]" />
+                    </div>
+                    <span className="text-sm font-medium text-[#475467] group-hover:text-[#EF4444]">Delete</span>
+                </button>
+            </Popconfirm>
         </div>
     );
 
