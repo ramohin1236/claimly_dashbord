@@ -7,7 +7,7 @@ import { useGetMetaDataQuery } from "../../store/api/webApi"
 
 const TopDash = () => {
   
- const {data: metaData} = useGetMetaDataQuery()
+ const {data: metaData, isLoading} = useGetMetaDataQuery()
  console.log("data",metaData?.data)
  const totalUsers = metaData?.data?.totalNormalUser
  const blockedUsers = metaData?.data?.totalBlockedUser
@@ -22,7 +22,10 @@ const TopDash = () => {
 
         <div className='flex flex-col gap-3'>
           <p className='text-xl font-medium'>Total Users</p>
-          <p className='text-4xl font-bold text-[#2563EB]'>{totalUsers}</p>
+          <p className='text-4xl font-bold text-[#2563EB]'>
+            {isLoading ? (<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>) :totalUsers}
+            
+            </p>
         </div>
       </div>
       {/* first box */}
@@ -33,7 +36,7 @@ const TopDash = () => {
 
         <div className='flex flex-col gap-3'>
           <p className='text-xl font-medium'>Blocked Users</p>
-          <p className='text-4xl font-bold text-[#EF4444]'>{blockedUsers}</p>
+          <p className='text-4xl font-bold text-[#EF4444]'>{isLoading ? (<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#EF4444]"></div>) :blockedUsers}</p>
         </div>
       </div>
       {/* first box */}
@@ -44,7 +47,7 @@ const TopDash = () => {
 
         <div className='flex flex-col gap-3'>
           <p className='text-xl font-medium'>Total Claims</p>
-          <p className='text-4xl font-bold text-[#16A34A]'>{totalClaims}</p>
+          <p className='text-4xl font-bold text-[#16A34A]'>{isLoading ? (<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#16A34A]"></div>) :totalClaims}</p>
         </div>
       </div>
     </div>

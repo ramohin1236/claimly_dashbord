@@ -24,6 +24,13 @@ export const webApi = apiSlice.injectEndpoints({
             }),
             providesTags: ['MetaData']
         }),
+        getUserChartData: builder.query<any, string>({
+            query: (year) => ({
+                url: `/meta/user-chart-data?year=${year}`,
+                method: 'GET'
+            }),
+            providesTags: ['MetaData']
+        }),
         createPrivacyPolicy: builder.mutation({
             query: (data) => ({
                 url: '/manage-Web/add-privacy-policy',
@@ -82,5 +89,6 @@ export const {
     useGetTermsConditionsQuery,
     useDeleteFaqMutation,
     useUpdateFaqMutation,
-    useGetMetaDataQuery
+    useGetMetaDataQuery,
+    useGetUserChartDataQuery
 } = webApi;

@@ -112,7 +112,7 @@ export default function ManageUsers() {
                         className={`text-[14px] ${!isUserBlocked ? "text-[#22C55E]" : "text-[#EF4444]"
                             }`}
                     >
-                        {!isUserBlocked ? "Active" : "Inactive"}
+                        {!isUserBlocked ? "Active" : "Blocked"}
                     </span>
                 );
             },
