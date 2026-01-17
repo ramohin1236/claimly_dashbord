@@ -33,6 +33,13 @@ export const insurerApi = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Claim'],
         }),
+         deleteInsurer: builder.mutation({
+            query: (id) => ({
+                url: `/insurer/delete-insurer/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Claim']
+        }),
     }),
 });
 
@@ -40,4 +47,5 @@ export const {
     useGetInsurerClaimsQuery,
     useGetSingleInsurerQuery,
     useUpdateInsurerStatusMutation,
+    useDeleteInsurerMutation,
 } = insurerApi;

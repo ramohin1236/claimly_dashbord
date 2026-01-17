@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 
 export default function ManageClaimDetails() {
-    const baseURl = "https://6dxv0gtk-4444.inc1.devtunnels.ms"
+    // const baseURl = "https://claimly-insurance-server.vercel.app"
 
     const { id } = useParams();
 
@@ -83,7 +83,7 @@ export default function ManageClaimDetails() {
     const handleDownload = async (fileUrl: string, fileName: string) => {
         try {
 
-            const apiBaseUrl = 'https://6dxv0gtk-4444.inc1.devtunnels.ms/api/v1';
+            const apiBaseUrl = 'https://claimly-insurance-server.vercel.app/api/v1';
             const domain = new URL(apiBaseUrl).origin;
 
 
@@ -121,7 +121,7 @@ export default function ManageClaimDetails() {
 
     //     // relative path হলে
     //     if (!fileUrl.startsWith("http")) {
-    //         finalUrl = `https://6dxv0gtk-4444.inc1.devtunnels.ms/${fileUrl.replace(/\\/g, "/")}`;
+    //         finalUrl = `https://claimly-insurance-server.vercel.app/${fileUrl.replace(/\\/g, "/")}`;
     //     }
 
     //     const link = document.createElement("a");

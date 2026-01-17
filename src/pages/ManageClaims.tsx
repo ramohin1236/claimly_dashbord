@@ -2,12 +2,13 @@ import dashboardIcon from "../../public/Group (4).svg";
 import frame3 from "../../public/Vector (3).svg";
 
 import { useState } from "react";
-import { Table, Button, Select } from "antd";
+import { Table, Button, Select, Popconfirm } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { ChevronDown, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useGetInsurerClaimsQuery } from "../store/api/insurerApi";
+import { useDeleteInsurerMutation, useGetInsurerClaimsQuery } from "../store/api/insurerApi";
 import dayjs from "dayjs";
+import { toast } from "sonner";
 
 interface ClaimData {
     _id: string;
@@ -26,6 +27,7 @@ export default function ManageClaims() {
     const [statusFilter, setStatusFilter] = useState<string | undefined>(undefined);
     const limit = 10;
 
+    const [deleteInsurer] = useDeleteInsurerMutation();
     const { data: claimsData, isLoading } = useGetInsurerClaimsQuery<any>({
         page,
         limit,
@@ -42,12 +44,26 @@ export default function ManageClaims() {
         submittedOn: dayjs(item.createdAt).format("MMM DD, YYYY"),
     })) || [];
 
+      const handleDeleteGuide = async (id: string) => {
+        const toastId = toast.loading("Deleting guide...");
+        try {
+            const res = await deleteInsurer(id).unwrap();
+            if (res.success) {
+                toast.success(res.message || "Guide deleted successfully", { id: toastId });
+            } else {
+                toast.error(res.message || "Failed to delete guide", { id: toastId });
+            }
+        } catch (err: any) {
+            toast.error(err?.data?.message || "Failed to delete guide", { id: toastId });
+        }
+    };
+
     const columns: ColumnsType<ClaimData> = [
         {
             title: "User Info",
             key: "userInfo",
             render: (_: unknown, record: any) => {
-                const apiBaseUrl = 'https://6dxv0gtk-4444.inc1.devtunnels.ms/api/v1';
+                const apiBaseUrl = 'https://claimly-insurance-server.vercel.app/api/v1';
                 const domain = new URL(apiBaseUrl).origin;
 
                 const imageUrl = record.profile_image
@@ -129,13 +145,20 @@ export default function ManageClaims() {
                             <img src={frame3} alt="view" className="w-[18px] h-[18px]" />
                         </Button>
                     </Link>
-                    <Button
-                        className="p-0 border border-[#EF4444]! rounded-[4px] w-8 h-8 flex justify-center items-center"
-                        style={{ padding: 0 }}
-                        onClick={() => console.log("Delete", record._id)}
+                    <Popconfirm
+                        title="Delete the guide"
+                        description="Are you sure to delete this guide?"
+                        onConfirm={() => handleDeleteGuide(record._id)}
+                        okText="Yes"
+                        cancelText="No"
                     >
-                        <Trash2 size={16} className="text-[#EF4444]" />
-                    </Button>
+                        <Button
+                            className="p-0 border border-[#EF4444]! rounded-[4px] w-8 h-8 flex justify-center items-center"
+                            style={{ padding: 0 }}
+                        >
+                            <Trash2 size={16} className="text-[#EF4444]" />
+                        </Button>
+                    </Popconfirm>
                 </div>
             ),
         },

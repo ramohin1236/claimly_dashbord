@@ -1,15 +1,15 @@
 import dashboardIcon from "../../public/Group (4).svg";
 import frame3 from "../../public/Frame (3).svg";
 import blkIcon from "../../public/Group (5).svg";
-import unblkIcon from "../../public/unblk.svg";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { Table, Button, Input, Select } from "antd";
+import { Table, Button, Input, Select, Popconfirm } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Search, ChevronDown } from "lucide-react";
 import { useGetUsersQuery, useToggleBlockUserMutation } from "../store/api/userApi";
 import { toast } from "sonner";
+import unblkIcon from "../../public/unblk.svg";
 
 interface UserData {
     _id: string;
@@ -106,7 +106,7 @@ export default function ManageUsers() {
             dataIndex: "isBlocked",
             key: "isBlocked",
             render: (_: boolean | string, record: UserData) => {
-                const isUserBlocked = record?.user[0]?.isBlocked === true || String(record?.user[0]?.isBlocked) === "true";
+                const isUserBlocked = record?.user?.[0]?.isBlocked === true;
                 return (
                     <span
                         className={`text-[14px] ${!isUserBlocked ? "text-[#22C55E]" : "text-[#EF4444]"
@@ -120,35 +120,42 @@ export default function ManageUsers() {
         {
             title: "Actions",
             key: "actions",
-            render: (_, record: UserData) => (
-                <div className="flex items-center gap-2">
-                    <Button
-                        onClick={() => navigate(`/manage_users/${record?._id}`)}
-                        className="p-0 border-[#5D5D5D] rounded-[4px] w-8 h-8 flex justify-center items-center"
-                        style={{ padding: 0 }}
-                    >
-                        <img src={frame3} alt="user" className="w-[18px] h-[18px]" />
-                    </Button>
+            render: (_, record: UserData) => {
+                const isUserBlocked = record?.user?.[0]?.isBlocked === true;
+                const userId = record?.user?.[0]?._id;
 
-                    {!record.isBlocked ? (
+                return (
+                    <div className="flex items-center gap-2">
                         <Button
-                            onClick={() => handleBlockToggle(record?.user[0]?._id, !record?.user[0]?.isBlocked)}
-                            className="p-0 border-[#EF4444] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#EF4444]/5"
-                            style={{ padding: 0, borderColor: '#EF4444' }}
+                            onClick={() => navigate(`/manage_users/${record?._id}`)}
+                            className="p-0 border-[#5D5D5D] rounded-[4px] w-8 h-8 flex justify-center items-center"
+                            style={{ padding: 0 }}
                         >
-                            <img src={blkIcon} alt="block" className="w-[18px] h-[18px]" />
+                            <img src={frame3} alt="user" className="w-[18px] h-[18px]" />
                         </Button>
-                    ) : (
-                        <Button
-                            onClick={() => handleBlockToggle(record?.user[0]?._id, !record?.user[0]?.isBlocked)}
-                            className="p-0 border-[#22C55E] rounded-[4px] w-8 h-8 flex justify-center items-center bg-[#22C55E]/5"
-                            style={{ padding: 0, borderColor: '#22C55E' }}
+
+                        <Popconfirm
+                            title={`${!isUserBlocked ? "Block" : "Unblock"} User`}
+                            description={`Are you sure you want to ${!isUserBlocked ? "block" : "unblock"} this user?`}
+                            onConfirm={() => handleBlockToggle(userId, !isUserBlocked)}
+                            okText="Yes"
+                            cancelText="No"
                         >
-                            <img src={unblkIcon} alt="unblock" className="w-[18px] h-[18px]" />
-                        </Button>
-                    )}
-                </div>
-            ),
+                            <Button
+                                className={`p-0 rounded-[4px] w-8 h-8 flex justify-center items-center ${!isUserBlocked ? "border-[#EF4444] bg-[#EF4444]/5" : "border-[#22C55E] bg-[#22C55E]/5"
+                                    }`}
+                                style={{ padding: 0, borderColor: !isUserBlocked ? '#EF4444' : '#22C55E' }}
+                            >
+                                <img
+                                    src={!isUserBlocked ? blkIcon : unblkIcon}
+                                    alt={!isUserBlocked ? "block" : "unblock"}
+                                    className="w-[18px] h-[18px]"
+                                />
+                            </Button>
+                        </Popconfirm>
+                    </div>
+                );
+            },
         },
     ];
 

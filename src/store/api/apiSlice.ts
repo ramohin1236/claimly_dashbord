@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'https://6dxv0gtk-4444.inc1.devtunnels.ms/api/v1',
+        baseUrl: 'https://claimly-insurance-server.vercel.app/api/v1',
         prepareHeaders: (headers) => {
             const token = localStorage.getItem('accessToken');
             if (token) {
