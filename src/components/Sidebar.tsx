@@ -1,4 +1,4 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../../public/Logo 3.svg';
 import logout from '../../public/Group (20).svg';
 import sidenavcollapseLogo from '../../public/vite.svg';
@@ -8,6 +8,17 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isCollapsed }: SidebarProps) {
+  const navigate = useNavigate();
+  
+  const handleLogout = () => {
+    // Clear authentication data
+    // localStorage.removeItem('authToken');
+    localStorage.removeItem('accessToken');
+
+    
+    // Redirect to login
+    navigate('/auth/login');
+  };
   const navItems = [
     { icon: '/dashbord.svg', label: 'Dashboard', path: '/' },
     { icon: '/manageUser.svg', label: 'Manage Users', path: '/manage_users' },
@@ -67,7 +78,10 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
       </nav>
 
       <div className="p-[1px] my-2 bg-gradient-to-r from-[#1E293B] to-[#2563EB] rounded-md mx-2">
-        <button className={`flex items-center cursor-pointer gap-3 px-4 py-3 w-full rounded-[5px] bg-white hover:bg-slate-50 transition-colors ${isCollapsed ? 'justify-center px-0' : ''}`}>
+        <button 
+          onClick={handleLogout}
+          className={`flex items-center cursor-pointer gap-3 px-4 py-3 w-full rounded-[5px] bg-white hover:bg-slate-50 transition-colors ${isCollapsed ? 'justify-center px-0' : ''}`}
+        >
           <img src={logout} alt="" className="w-5 h-5 transition-transform group-hover:scale-110" />
           {!isCollapsed && <span className="font-medium whitespace-nowrap bg-gradient-to-r from-[#1E293B] to-[#2563EB] bg-clip-text text-transparent">Logout</span>}
         </button>
