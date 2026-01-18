@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 
 export default function ManageClaimDetails() {
-    // const baseURl = "https://claimly-insurance-server.vercel.app"
+
 
     const { id } = useParams();
 
@@ -74,39 +74,87 @@ export default function ManageClaimDetails() {
             } else {
                 toast.error(res.message || "Failed to update status", { id: toastId });
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Update failed:", error);
-            toast.error(error?.data?.message || "An error occurred while updating status", { id: toastId });
+            let errorMessage = "An error occurred while updating status";
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            } else if (error && typeof error === 'object' && 'data' in error) {
+                const errorObj = error as { data?: { message?: string } };
+                errorMessage = errorObj.data?.message || errorMessage;
+            }
+            toast.error(errorMessage, { id: toastId });
         }
     };
 
     const handleDownload = async (fileUrl: string, fileName: string) => {
+        let toastId: string | number | undefined;
         try {
+            toastId = toast.loading("Downloading file...");
+            
+            // Clean the fileUrl - remove any JSON stringification artifacts
+            let cleanUrl = String(fileUrl).trim();
+            if (cleanUrl.startsWith('[') && cleanUrl.endsWith(']')) {
+                try {
+                    cleanUrl = JSON.parse(cleanUrl)[0];
+                } catch {
+                    // If parsing fails, just use the original
+                }
+            }
+            cleanUrl = cleanUrl.replace(/\\/g, '/');
 
-            const apiBaseUrl = 'https://claimly-insurance-server-eight.vercel.app/api/v1';
-            const domain = new URL(apiBaseUrl).origin;
+            // If URL is already absolute (http/https), use it directly
+            if (cleanUrl.startsWith('http://') || cleanUrl.startsWith('https://')) {
+                console.log("Downloading from (absolute URL):", cleanUrl);
+                const response = await fetch(cleanUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
 
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', fileName);
+                document.body.appendChild(link);
+                link.click();
+                
+                setTimeout(() => {
+                    link.parentNode?.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                }, 100);
+            } else {
+                // For relative paths, prepend server domain
+                const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'https://claimly-insurance-server-eight.vercel.app/api/v1';
+                const domain = new URL(apiBaseUrl).origin;
+                const fullUrl = `${domain}/${cleanUrl.replace(/^\/+/, '')}`;
 
-            const fullUrl = fileUrl.startsWith('http')
-                ? fileUrl
-                : `${domain}/${fileUrl.replace(/\\/g, '/')}`;
+                console.log("Downloading from (relative path):", fullUrl);
+                const response = await fetch(fullUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status} ${response.statusText}`);
+                }
 
-            const response = await fetch(fullUrl);
-            console.log("Response:", response);
-            if (!response.ok) throw new Error('Network response was not ok');
-
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
-            link.click();
-            link.parentNode?.removeChild(link);
-            window.URL.revokeObjectURL(url);
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', fileName);
+                document.body.appendChild(link);
+                link.click();
+                
+                setTimeout(() => {
+                    link.parentNode?.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+                }, 100);
+            }
+            
+            toast.success(`${fileName} downloaded successfully`, { id: toastId });
         } catch (error) {
             console.error("Download failed:", error);
-            alert("Failed to download file. Please check if the file exists on the server.");
+            toast.error("Failed to download file. Please try again.", { id: toastId });
         }
     };
 
@@ -123,13 +171,8 @@ export default function ManageClaimDetails() {
 
                 {/* supporting report */}
 
-                <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4">
-                    <p>Supporting Documents</p>
-
-                    {/* <div className="">
-                        <img className="w-48 h-auto" src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D" />
-                    </div> */}
-
+                <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4 bg-white">
+                    <p className="text-[#1E293B] font-semibold text-base">Supporting Documents</p>
 
                     <div className="flex flex-col gap-4">
                         {/* first */}
@@ -169,8 +212,8 @@ export default function ManageClaimDetails() {
                 </div>
 
                 {claimStatus === "Report Ready" && (
-                    <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4">
-                        <p>Claim Evaluation Report</p>
+                    <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4 bg-white">
+                        <p className="text-[#1E293B] font-semibold text-base">Claim Evaluation Report</p>
                         <div className="flex flex-col gap-4">
                             {claim?.evaluation_Report?.map((report: string, index: number) => {
                                 const isImage = report.toLowerCase().match(/\.(jpg|jpeg|png|gif|svg|webp)$/);
@@ -200,8 +243,8 @@ export default function ManageClaimDetails() {
                 )}
 
                 {claimStatus === "Failed" && (
-                    <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4">
-                        <p className="text-[#EF4444]">Failure Note</p>
+                    <div className="border border-[#DBEAFE] rounded-lg py-4 flex flex-col gap-4 px-4 bg-white">
+                        <p className="text-[#EF4444] font-semibold text-base">Failure Note</p>
                         <div className="flex flex-col gap-4">
                             <p className="text-[#64748B]">
                                 {claim?.failureNote || "No failure note provided."}
