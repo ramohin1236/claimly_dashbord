@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { X, Upload, Trash2 } from "lucide-react";
-import pdfIcon from "../../../public/Group (13).svg"
+import { X } from "lucide-react";
+
 
 interface UpdateStatusModalProps {
     isOpen: boolean;
     onClose: () => void;
     currentStatus: string;
-    onUpdateStatus: (status: string, reportFiles?: File[], failureNote?: string) => void;
+    onUpdateStatus: (status: string, cloudinaryUrls?: string[], failureNote?: string) => void;
 }
 
 export default function UpdateStatusModal({
@@ -16,7 +16,7 @@ export default function UpdateStatusModal({
     onUpdateStatus,
 }: UpdateStatusModalProps) {
     const [selectedStatus, setSelectedStatus] = useState(currentStatus);
-    const [reportFiles, setReportFiles] = useState<File[]>([]);
+    const [reportUrls, setReportUrls] = useState<string[]>([]);
     const [failureNote, setFailureNote] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isAnimating, setIsAnimating] = useState(false);
@@ -35,25 +35,14 @@ export default function UpdateStatusModal({
         { value: "Failed", label: "Failed", color: "text-[#F43F5E]" },
     ];
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            const newFiles = Array.from(e.target.files);
-            setReportFiles([...reportFiles, ...newFiles]);
-        }
-    };
-
-    const handleRemoveFile = (index: number) => {
-        setReportFiles(reportFiles.filter((_, i) => i !== index));
-    };
-
     const handleSaveUpdate = () => {
-        onUpdateStatus(selectedStatus, reportFiles, failureNote);
+        onUpdateStatus(selectedStatus, reportUrls.length > 0 ? reportUrls : undefined, failureNote);
         onClose();
     };
 
     const handleCancel = () => {
         setSelectedStatus(currentStatus);
-        setReportFiles([]);
+        setReportUrls([]);
         setFailureNote("");
         setIsAnimating(false);
         setTimeout(() => onClose(), 200);
@@ -147,64 +136,6 @@ export default function UpdateStatusModal({
                     </div>
                 </div>
 
-                {/* Report Ready - Upload Document */}
-                {selectedStatus === "Report Ready" && (
-                    <div className="mb-6">
-                        <label className="block text-sm font-medium text-[#1E293B] mb-2">
-                            Upload Report Documents
-                        </label>
-
-                        <label className="w-full px-4 py-8 border-2 border-dashed border-gray-300 rounded-lg text-center cursor-pointer hover:border-[#2563EB] flex flex-col items-center justify-center mb-4">
-                            <Upload className="text-[#2563EB] mb-2" size={24} />
-                            <span className="text-sm text-[#2563EB]">Upload Documents</span>
-                            <input
-                                type="file"
-                                onChange={handleFileChange}
-                                className="hidden"
-                                accept=".pdf,.doc,.docx,image/*"
-                                multiple
-                            />
-                        </label>
-
-                        {/* Display uploaded files */}
-                        {reportFiles.length > 0 && (
-                            <div className="flex flex-col gap-2">
-                                {reportFiles.map((file, index) => (
-                                    <div key={index} className="border border-gray-300 rounded-lg p-4 flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
-                                            {file.type.startsWith('image/') ? (
-                                                // Image Icon
-                                                <div className="bg-blue-100 p-2 rounded">
-                                                    <svg
-                                                        className="w-6 h-6 text-blue-600"
-                                                        fill="currentColor"
-                                                        viewBox="0 0 20 20"
-                                                    >
-                                                        <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                                                    </svg>
-                                                </div>
-                                            ) : (
-                                                // PDF Icon
-                                                <div className="bg-red-100 p-2 rounded">
-                                                    <img src={pdfIcon} alt="PDF" className="w-6 h-6" />
-                                                </div>
-                                            )}
-                                            <span className="text-sm text-[#1E293B]">
-                                                {file.name}
-                                            </span>
-                                        </div>
-                                        <button
-                                            onClick={() => handleRemoveFile(index)}
-                                            className="text-red-500 hover:text-red-700"
-                                        >
-                                            <Trash2 size={18} />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )}
 
                 {/* Failed - Failure Note */}
                 {selectedStatus === "Failed" && (
